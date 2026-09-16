@@ -49,23 +49,28 @@ A mission-critical merchant banking web application built for **First Bank of Ni
 ## ✨ Key Architectural Highlights
 
 ### 1. Zero Floating-Point Financial Engine (`src/lib/format-money.ts`)
+
 - **Integer Kobo Rule**: All balances, debits, credits, and fees are calculated in discrete sub-unit integers ($\text{₦}1.00 = 100\text{ Kobo}$).
 - Completely eliminates JavaScript IEEE-754 binary floating-point rounding anomalies (`0.1 + 0.2 !== 0.3`).
 - Formats currency with commas, 2 decimal places, and Nigerian currency symbol (`₦3,845,250.00`).
 
 ### 2. Anti-Double-Spend Idempotency (`src/lib/idempotency.ts`)
+
 - Every outgoing transfer request attaches an RFC4122 v4 UUID `Idempotency-Key` header.
 - Server/MSW maintains an in-memory processed transaction cache to guarantee that duplicate requests (e.g. from network timeouts or double button clicks) safely replay the original settlement without repeated debits.
 
 ### 3. High-Performance 60fps Feed Virtualization (`src/features/transactions/`)
+
 - Powered by `react-window` and dynamic window resizing.
 - Renders 1,000+ to 10,000+ transaction rows seamlessly with smooth 60fps scrolling, minimal DOM footprint, debounced search (250ms), and real-time status filtering (Credits, Debits, Completed, Pending, Failed).
 
 ### 4. Optimistic UI Updates & Snapshot Rollback (`src/features/send-money/`)
+
 - On transfer authorization, the available balance is immediately decremented and the new transaction is prepended to the top of the ledger.
 - If MSW network simulation injects a failure (e.g. 100% failure rate or network disconnect), TanStack Query executes a full snapshot rollback, restoring the exact previous state and triggering an accessible `role="alert"` notification.
 
 ### 5. Interactive Network Simulation DevTools Bar (`src/components/layout/SimulationBar.tsx`)
+
 - Toggleable via bottom toolbar button or keyboard shortcut: **`Ctrl + Shift + D`** (or `Cmd + Shift + D`).
 - Adjustable latency slider (`0ms`, `150ms 4G`, `800ms 3G`, `2500ms Degraded`).
 - Failure rate test presets (`0%`, `25%`, `50%`, `100%`).
@@ -73,6 +78,7 @@ A mission-critical merchant banking web application built for **First Bank of Ni
 - One-click Mock Database Reset.
 
 ### 6. FirstBank Brand Design Tokens & Accessibility
+
 - **Primary Navy**: `#002D62`
 - **Deep Navy (Dark Mode App Shell)**: `#001A3A`
 - **FirstBank Accent Gold**: `#D4AF37`
@@ -80,9 +86,36 @@ A mission-critical merchant banking web application built for **First Bank of Ni
 
 ---
 
-## 🤖 Agentic Architecture & Skills (`.agents/`)
+## ⚖️ Key Architectural Decisions & Trade-offs
+
+### 1. State Management Choice: TanStack Query v5 over Redux/Zustand
+
+- **Decision**: We adopted **TanStack Query (React Query v5)** for all server/async state instead of a global state store like Redux Toolkit or Zustand.
+- **Rationale**: In banking dashboards, 90% of state represents remote financial resources (balances, transaction ledgers, exchange rates, beneficiaries). TanStack Query provides out-of-the-box cache invalidation, deduplication, background re-fetching, and declarative optimistic mutation rollbacks via query snapshotting.
+- **Trade-off**: Requires strict query key discipline (`['wallet', 'balance']`, `['transactions', filters]`) and query cancellation handlers (`cancelQueries`) to prevent background refetches from clobbering in-flight optimistic UI states.
+
+### 2. Data Fetching & Mocking Strategy: MSW v2 (Mock Service Worker)
+
+- **Decision**: We implemented **Mock Service Worker (MSW v2)** intercepting requests at the browser Network Service Worker layer rather than using Axios mock adapters or in-memory API stubs.
+- **Rationale**: MSW operates at the network protocol boundary, intercepting real browser `fetch` calls. This ensures identical HTTP request/response lifecycles, real latency simulation, HTTP status code handling, and network failure injections without modifying a single line of production application code.
+- **Trade-off**: Requires registering the service worker (`public/mockServiceWorker.js`) during dev boot and handling service worker activation lifecycles in automated test runners.
+
+### 3. Precision Financial Math: Discrete Integer Kobo vs. Decimal Libraries
+
+- **Decision**: We engineered a custom zero-dependency integer Kobo engine with `Intl.NumberFormat` instead of pulling heavy decimal libraries like `bignumber.js` or `decimal.js`.
+- **Rationale**: Nigerian banking rails (NIBSS / NIP) operate strictly on 2-decimal fractional sub-units ($\text{₦}1 = 100\text{ Kobo}$). Integer kobo representation fits safely within JavaScript's `Number.MAX_SAFE_INTEGER` ($2^{53} - 1 \approx \text{₦}90\text{ Trillion}$), delivering microsecond calculation speeds with zero bundle bloat.
+- **Trade-off**: Developers must strictly follow the rule that values passing into UI formatters or API payloads are integer kobo, converting user decimal inputs only at the input boundary.
+
+### 4. Ledger Rendering: Feed Virtualization (`react-window`) vs. Traditional Pagination
+
+- **Decision**: Implemented high-performance windowed virtualization for 1,000+ transaction rows instead of classic paginated page clicks.
+- **Rationale**: POS operators and merchant cashiers require continuous fast scrolling and instant real-time search/filtering through hundreds of daily collections on mobile devices without page reload latency.
+- **Trade-off**: Virtualization requires fixed/dynamic row heights and careful DOM measurement, but guarantees a consistent 60fps frame rate and bounded DOM node memory consumption on low-RAM mobile hardware.
+
+---
 
 The repository includes preconfigured agent definitions and skills located in `.agents/`:
+
 - **`fintech-engine`**: Zero floating-point kobo rules and NIP fee calculations.
 - **`optimistic-rollback`**: TanStack Query optimistic mutation rollback lifecycle.
 - **`feed-virtualizer`**: `react-window` feed virtualization standards.
@@ -96,19 +129,31 @@ The repository includes preconfigured agent definitions and skills located in `.
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js $\ge 18$
 - npm $\ge 9$
 
-### Installation & Running Locally
+### Quick Start (Install & Run in One Command)
+
 ```bash
-# 1. Clone repository and install dependencies
+# Clone and launch immediately
 git clone https://github.com/Muba-rak/FBN-NovaPay.git
 cd FBN-NovaPay
+npm start
+```
+
+> `npm start` automatically installs all dependencies and starts the Vite development server in a single step.
+
+### Alternative (Step-by-Step)
+
+```bash
+# 1. Install dependencies
 npm install
 
 # 2. Start Vite development server with MSW mocking
 npm run dev
 ```
+
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
@@ -116,6 +161,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## 🧪 Testing Suite
 
 ### Unit & Integration Tests (Vitest)
+
 ```bash
 # Run all unit tests
 npm test
@@ -125,6 +171,7 @@ npm run test:coverage
 ```
 
 ### End-to-End & Accessibility Tests (Playwright)
+
 ```bash
 # Run all Playwright tests
 npm run test:e2e
@@ -134,6 +181,7 @@ npx playwright test --ui
 ```
 
 ### TypeScript Validation
+
 ```bash
 npm run typecheck
 ```
