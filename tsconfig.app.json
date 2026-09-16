@@ -28,5 +28,5 @@
     "noFallthroughCasesInSwitch": true,
     "types": ["@testing-library/jest-dom/vitest"]
   },
-  "include": ["src", "skills", "e2e"]
+  "include": ["src", ".agents", "e2e"]
 }
