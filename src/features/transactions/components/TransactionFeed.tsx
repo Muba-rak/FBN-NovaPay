@@ -59,7 +59,7 @@ export function TransactionFeed({ onOpenSendMoney }: TransactionFeedProps) {
   return (
     <section
       aria-labelledby="transaction-feed-heading"
-      className="space-y-5 rounded-3xl border border-slate-200/90 bg-white p-4 sm:p-6 shadow-xs"
+      className="space-y-5 rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0b1736] p-4 sm:p-6 shadow-xs transition-colors"
     >
       {/* Feed Title & Quick Export Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -70,11 +70,11 @@ export function TransactionFeed({ onOpenSendMoney }: TransactionFeedProps) {
           <div>
             <h2
               id="transaction-feed-heading"
-              className="text-lg font-bold tracking-tight text-slate-900"
+              className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-50"
             >
               Transaction Ledger
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Live NIBSS NIP & POS Real-Time Settlement Audit Trail
             </p>
           </div>
@@ -88,7 +88,7 @@ export function TransactionFeed({ onOpenSendMoney }: TransactionFeedProps) {
             size="sm"
             onClick={() => refetch()}
             disabled={isFetching}
-            className="h-8 gap-1.5 text-xs text-slate-700 bg-white hover:bg-slate-50"
+            className="h-8 gap-1.5 text-xs text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-800"
             aria-label="Refresh transaction ledger"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? 'animate-spin' : ''}`} />
@@ -101,7 +101,7 @@ export function TransactionFeed({ onOpenSendMoney }: TransactionFeedProps) {
             size="sm"
             onClick={handleExportCSV}
             disabled={transactions.length === 0}
-            className="h-8 gap-1.5 text-xs text-slate-700 bg-white hover:bg-slate-50"
+            className="h-8 gap-1.5 text-xs text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-800"
             aria-label="Download transactions as CSV"
           >
             <Download className="h-3.5 w-3.5" />
@@ -114,38 +114,38 @@ export function TransactionFeed({ onOpenSendMoney }: TransactionFeedProps) {
       {summary && (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5">
           {/* Total Inflow Volume */}
-          <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-3">
-            <div className="flex items-center justify-between text-slate-500">
+          <div className="rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/60 p-3">
+            <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
               <span className="text-[11px] font-semibold uppercase tracking-wider">Inflows ({summary.creditCount})</span>
-              <ArrowDownLeft className="h-3.5 w-3.5 text-emerald-600" />
+              <ArrowDownLeft className="h-3.5 w-3.5 text-emerald-500" />
             </div>
-            <div className="mt-1 font-mono font-bold text-sm sm:text-base text-emerald-600 tracking-tight">
+            <div className="mt-1 font-mono font-bold text-sm sm:text-base text-emerald-600 dark:text-emerald-400 tracking-tight">
               {formatKoboToNaira(summary.creditVolumeKobo)}
             </div>
           </div>
 
           {/* Total Outflow Volume */}
-          <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-3">
-            <div className="flex items-center justify-between text-slate-500">
+          <div className="rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/60 p-3">
+            <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
               <span className="text-[11px] font-semibold uppercase tracking-wider">Outflows ({summary.debitCount})</span>
               <ArrowUpRight className="h-3.5 w-3.5 text-slate-400" />
             </div>
-            <div className="mt-1 font-mono font-bold text-sm sm:text-base text-slate-900 tracking-tight">
+            <div className="mt-1 font-mono font-bold text-sm sm:text-base text-slate-900 dark:text-slate-50 tracking-tight">
               {formatKoboToNaira(summary.debitVolumeKobo)}
             </div>
           </div>
 
           {/* Net Flow Volume (Hidden on small mobile, visible on desktop) */}
-          <div className="col-span-2 lg:col-span-1 rounded-xl border border-slate-200/80 bg-slate-50/70 p-3">
-            <div className="flex items-center justify-between text-slate-500">
+          <div className="col-span-2 lg:col-span-1 rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/60 p-3">
+            <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
               <span className="text-[11px] font-semibold uppercase tracking-wider">Net Settlement Flow</span>
-              <SlidersHorizontal className="h-3.5 w-3.5 text-amber-600" />
+              <SlidersHorizontal className="h-3.5 w-3.5 text-amber-500" />
             </div>
             <div
               className={`mt-1 font-mono font-bold text-sm sm:text-base tracking-tight ${
                 summary.creditVolumeKobo - summary.debitVolumeKobo >= 0
-                  ? 'text-emerald-600'
-                  : 'text-red-600'
+                  ? 'text-emerald-600 dark:text-emerald-400'
+                  : 'text-red-600 dark:text-red-400'
               }`}
             >
               {formatKoboToNaira(summary.creditVolumeKobo - summary.debitVolumeKobo, {

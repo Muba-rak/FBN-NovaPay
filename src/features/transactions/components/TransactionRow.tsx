@@ -101,7 +101,7 @@ export const TransactionRow = React.memo<TransactionRowProps>(
           }
         }}
         aria-label={`Transaction ${transaction.reference}, ${counterpartyName}, amount ${formattedAmount}, status ${transaction.status}`}
-        className="group flex w-full items-center justify-between rounded-2xl border border-slate-200/80 bg-white p-3 sm:p-3.5 text-left shadow-2xs transition-all duration-150 hover:border-slate-300 hover:bg-slate-50/80 hover:shadow-xs focus-visible:border-[#002D62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002D62]/20 cursor-pointer"
+        className="group flex w-full items-center justify-between rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0b1736] p-3 sm:p-3.5 text-left shadow-2xs transition-all duration-150 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/80 dark:hover:bg-[#102047] hover:shadow-xs focus-visible:border-[#002D62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002D62]/20 cursor-pointer"
       >
         {/* Left: Icon & Description */}
         <div className="flex items-center space-x-3.5 min-w-0 pr-2">
@@ -109,10 +109,10 @@ export const TransactionRow = React.memo<TransactionRowProps>(
           <div
             className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors ${
               isFailed
-                ? "bg-red-50 text-red-600 ring-1 ring-red-200"
+                ? "bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 ring-1 ring-red-200 dark:ring-red-900/60"
                 : isCredit
-                  ? "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200"
-                  : "bg-blue-50 text-[#002D62] ring-1 ring-blue-100"
+                  ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-200 dark:ring-emerald-900/60"
+                  : "bg-blue-50 dark:bg-blue-950/50 text-[#002D62] dark:text-blue-300 ring-1 ring-blue-100 dark:ring-blue-900/60"
             }`}
           >
             {getChannelIcon(transaction.channel, transaction.type)}
@@ -121,19 +121,19 @@ export const TransactionRow = React.memo<TransactionRowProps>(
           {/* Counterparty & Metadata */}
           <div className="min-w-0 flex-1">
             <div className="flex items-center space-x-2">
-              <p className="truncate text-sm font-bold text-slate-900">
+              <p className="truncate text-sm font-bold text-slate-900 dark:text-slate-50">
                 {counterpartyName}
               </p>
               <span className="hidden sm:inline-block">
                 <Badge
                   variant="outline"
-                  className="text-[10px] px-1.5 py-0 font-medium bg-slate-50 text-slate-600 border-slate-200"
+                  className="text-[10px] px-1.5 py-0 font-medium bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800"
                 >
                   {getChannelLabel(transaction.channel)}
                 </Badge>
               </span>
             </div>
-            <div className="mt-0.5 flex items-center space-x-2 text-xs text-slate-500">
+            <div className="mt-0.5 flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400">
               <span className="font-mono text-[11px] truncate max-w-[120px] sm:max-w-[180px]">
                 {transaction.reference}
               </span>
@@ -151,10 +151,10 @@ export const TransactionRow = React.memo<TransactionRowProps>(
             <div
               className={`font-black tabular-nums text-sm sm:text-base tracking-tight ${
                 isFailed
-                  ? "text-slate-400 line-through"
+                  ? "text-slate-400 dark:text-slate-600 line-through"
                   : isCredit
-                    ? "text-emerald-600"
-                    : "text-slate-900"
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : "text-slate-900 dark:text-slate-50"
               }`}
             >
               {isFailed
@@ -165,15 +165,15 @@ export const TransactionRow = React.memo<TransactionRowProps>(
             {/* Status Badge */}
             <div className="mt-0.5 flex justify-end">
               {isSuccessful ? (
-                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
                   <CheckCircle2 className="h-3 w-3" /> Successful
                 </span>
               ) : isPending ? (
-                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700">
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 dark:text-amber-400">
                   <Clock className="h-3 w-3" /> Pending
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-red-700">
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-red-700 dark:text-red-400">
                   <AlertCircle className="h-3 w-3" /> Failed
                 </span>
               )}

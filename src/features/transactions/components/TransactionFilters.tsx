@@ -50,7 +50,7 @@ export function TransactionFilters({
   totalFilteredCount,
 }: TransactionFiltersProps) {
   return (
-    <div className="space-y-3 rounded-2xl border border-slate-200/80 bg-slate-50/50 p-4">
+    <div className="space-y-3 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 p-4">
       {/* Top Row: Search & Reset */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
         {/* Search Bar */}
@@ -71,7 +71,7 @@ export function TransactionFilters({
             <button
               type="button"
               onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
               aria-label="Clear search input"
             >
               <X className="h-4 w-4" />
@@ -82,8 +82,8 @@ export function TransactionFilters({
         {/* Results Counter & Reset Button */}
         <div className="flex items-center justify-between sm:justify-end gap-2">
           {totalFilteredCount !== undefined && (
-            <span className="text-xs font-medium text-slate-500 px-1">
-              <span className="font-bold text-slate-900 tabular-nums">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
+              <span className="font-bold text-slate-900 dark:text-slate-50 tabular-nums">
                 {totalFilteredCount.toLocaleString()}
               </span>{' '}
               records
@@ -96,7 +96,7 @@ export function TransactionFilters({
               variant="ghost"
               size="sm"
               onClick={onResetFilters}
-              className="h-8 gap-1.5 text-xs text-amber-700 hover:bg-amber-50 hover:text-amber-800"
+              className="h-8 gap-1.5 text-xs text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 hover:text-amber-800"
             >
               <RotateCcw className="h-3 w-3" />
               Reset Filters
@@ -106,8 +106,8 @@ export function TransactionFilters({
       </div>
 
       {/* Filter Chips / Segments */}
-      <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-200/70">
-        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500 mr-1 uppercase tracking-wider">
+      <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-200/70 dark:border-slate-800/70">
+        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 mr-1 uppercase tracking-wider">
           <Filter className="h-3.5 w-3.5" />
           <span>Filters:</span>
         </div>
@@ -124,8 +124,8 @@ export function TransactionFilters({
                 aria-pressed={isSelected}
                 className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-[#002D62] text-white shadow-2xs font-semibold'
-                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-950 shadow-2xs'
+                    ? 'bg-[#002D62] dark:bg-[#D4AF37] text-white dark:text-slate-950 shadow-2xs font-semibold'
+                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-slate-50 shadow-2xs'
                 }`}
               >
                 {opt.label}
@@ -134,7 +134,7 @@ export function TransactionFilters({
           })}
         </div>
 
-        <div className="h-4 w-px bg-slate-200 hidden sm:block mx-1" />
+        <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block mx-1" />
 
         {/* Status Chips */}
         <div className="flex flex-wrap gap-1" role="group" aria-label="Status filter">
@@ -148,8 +148,8 @@ export function TransactionFilters({
                 aria-pressed={isSelected}
                 className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-[#002D62] text-white shadow-2xs font-semibold'
-                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-950 shadow-2xs'
+                    ? 'bg-[#002D62] dark:bg-[#D4AF37] text-white dark:text-slate-950 shadow-2xs font-semibold'
+                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-slate-50 shadow-2xs'
                 }`}
               >
                 {opt.label}
@@ -158,7 +158,7 @@ export function TransactionFilters({
           })}
         </div>
 
-        <div className="h-4 w-px bg-slate-200 hidden sm:block mx-1" />
+        <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block mx-1" />
 
         {/* Type Chips */}
         <div className="flex flex-wrap gap-1" role="group" aria-label="Transaction type filter">
@@ -172,8 +172,8 @@ export function TransactionFilters({
                 aria-pressed={isSelected}
                 className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-[#002D62] text-white shadow-2xs font-semibold'
-                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-950 shadow-2xs'
+                    ? 'bg-[#002D62] dark:bg-[#D4AF37] text-white dark:text-slate-950 shadow-2xs font-semibold'
+                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-slate-50 shadow-2xs'
                 }`}
               >
                 {opt.label}

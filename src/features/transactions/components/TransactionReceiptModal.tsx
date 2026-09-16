@@ -84,7 +84,7 @@ export function TransactionReceiptModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent onClose={onClose} className="max-w-lg p-0 overflow-hidden">
+      <DialogContent className="max-w-lg p-0 overflow-hidden">
         {/* Receipt Header Banner */}
         <div className="bg-[#002D62] p-6 text-white text-center relative">
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-xs">
@@ -123,15 +123,15 @@ export function TransactionReceiptModal({
         </div>
 
         {/* Receipt Body */}
-        <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto bg-white">
+        <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto bg-white dark:bg-[#0b1736]">
           {/* Metadata Grid */}
-          <div className="rounded-2xl border border-slate-200/80 bg-slate-50/60 p-4 space-y-3 text-xs">
+          <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/60 dark:bg-slate-900/60 p-4 space-y-3 text-xs">
             {/* Counterparty */}
             <div className="flex justify-between items-start">
-              <span className="text-slate-500">
+              <span className="text-slate-500 dark:text-slate-400">
                 {isCredit ? "Sender / Customer" : "Recipient Name"}
               </span>
-              <span className="font-bold text-slate-900 text-right max-w-55">
+              <span className="font-bold text-slate-900 dark:text-slate-50 text-right max-w-55">
                 {isCredit
                   ? transaction.senderName || "Anonymous Customer"
                   : transaction.recipientName || "Beneficiary"}
@@ -141,10 +141,10 @@ export function TransactionReceiptModal({
             {/* Institution / Bank */}
             {(transaction.senderBankName || transaction.recipientBankName) && (
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">
+                <span className="text-slate-500 dark:text-slate-400">
                   Bank / Institution
                 </span>
-                <span className="font-semibold text-slate-900">
+                <span className="font-semibold text-slate-900 dark:text-slate-50">
                   {transaction.senderBankName || transaction.recipientBankName}
                 </span>
               </div>
@@ -153,10 +153,10 @@ export function TransactionReceiptModal({
             {/* Recipient Account (if applicable) */}
             {transaction.recipientAccount && (
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">
+                <span className="text-slate-500 dark:text-slate-400">
                   Account Number
                 </span>
-                <span className="font-mono font-bold text-slate-900">
+                <span className="font-mono font-bold text-slate-900 dark:text-slate-50">
                   {transaction.recipientAccount}
                 </span>
               </div>
@@ -164,10 +164,10 @@ export function TransactionReceiptModal({
 
             {/* Payment Channel */}
             <div className="flex justify-between items-center">
-              <span className="text-slate-500">
+              <span className="text-slate-500 dark:text-slate-400">
                 Payment Channel
               </span>
-              <span className="font-semibold uppercase text-slate-900">
+              <span className="font-semibold uppercase text-slate-900 dark:text-slate-50">
                 {transaction.channel.replace("_", " ")}
               </span>
             </div>
@@ -175,10 +175,10 @@ export function TransactionReceiptModal({
             {/* POS Terminal ID */}
             {transaction.terminalId && (
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">
+                <span className="text-slate-500 dark:text-slate-400">
                   Terminal ID
                 </span>
-                <span className="font-mono font-bold text-slate-900">
+                <span className="font-mono font-bold text-slate-900 dark:text-slate-50">
                   {transaction.terminalId}
                 </span>
               </div>
@@ -186,21 +186,21 @@ export function TransactionReceiptModal({
 
             {/* Date & Time */}
             <div className="flex justify-between items-center">
-              <span className="text-slate-500">
+              <span className="text-slate-500 dark:text-slate-400">
                 Timestamp
               </span>
-              <span className="font-medium text-slate-900">
+              <span className="font-medium text-slate-900 dark:text-slate-50">
                 {new Date(transaction.createdAt).toLocaleString("en-NG")}
               </span>
             </div>
 
             {/* Narration */}
             {transaction.narration && (
-              <div className="flex justify-between items-start pt-2 border-t border-slate-200">
-                <span className="text-slate-500">
+              <div className="flex justify-between items-start pt-2 border-t border-slate-200 dark:border-slate-800">
+                <span className="text-slate-500 dark:text-slate-400">
                   Narration
                 </span>
-                <span className="font-medium text-slate-700 text-right max-w-55">
+                <span className="font-medium text-slate-700 dark:text-slate-300 text-right max-w-55">
                   {transaction.narration}
                 </span>
               </div>
@@ -208,14 +208,14 @@ export function TransactionReceiptModal({
           </div>
 
           {/* Technical Identifiers (Reference & Session ID) */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-4 space-y-2.5 text-xs shadow-2xs">
+          <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/40 p-4 space-y-2.5 text-xs shadow-2xs">
             {/* Reference */}
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-[11px] font-medium text-slate-500">
+                <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
                   Transaction Reference
                 </div>
-                <div className="font-mono font-bold text-slate-900">
+                <div className="font-mono font-bold text-slate-900 dark:text-slate-50">
                   {transaction.reference}
                 </div>
               </div>
@@ -224,7 +224,7 @@ export function TransactionReceiptModal({
                 variant="outline"
                 size="sm"
                 onClick={() => handleCopy(transaction.reference, "ref")}
-                className="h-7 px-2.5 text-[11px] gap-1"
+                className="h-7 px-2.5 text-[11px] gap-1 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
               >
                 {copiedRef ? (
                   <Check className="h-3 w-3 text-emerald-600" />
@@ -237,12 +237,12 @@ export function TransactionReceiptModal({
 
             {/* NIBSS Session ID */}
             {transaction.nibssSessionId && (
-              <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
                 <div>
-                  <div className="text-[11px] font-medium text-slate-500">
+                  <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
                     NIBSS NIP Session ID
                   </div>
-                  <div className="font-mono text-slate-700 text-[11px] break-all font-semibold">
+                  <div className="font-mono text-slate-700 dark:text-slate-300 text-[11px] break-all font-semibold">
                     {transaction.nibssSessionId}
                   </div>
                 </div>
@@ -253,7 +253,7 @@ export function TransactionReceiptModal({
                   onClick={() =>
                     handleCopy(transaction.nibssSessionId!, "session")
                   }
-                  className="h-7 px-2.5 text-[11px] gap-1"
+                  className="h-7 px-2.5 text-[11px] gap-1 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   {copiedSession ? (
                     <Check className="h-3 w-3 text-emerald-600" />
@@ -267,8 +267,8 @@ export function TransactionReceiptModal({
           </div>
 
           {/* Security Guarantee Pill */}
-          <div className="flex items-center gap-2 rounded-xl bg-amber-50 p-3 text-xs text-amber-900 border border-amber-200/80">
-            <ShieldCheck className="h-4 w-4 shrink-0 text-amber-600" />
+          <div className="flex items-center gap-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 p-3 text-xs text-amber-900 dark:text-amber-200 border border-amber-200/80 dark:border-amber-900/60">
+            <ShieldCheck className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
             <span className="font-medium">
               Authorized by FirstBank of Nigeria Ltd. Licensed by CBN & Insured
               by NDIC.
@@ -277,13 +277,13 @@ export function TransactionReceiptModal({
         </div>
 
         {/* Actions Footer */}
-        <div className="bg-slate-50 p-4 border-t border-slate-200/80 flex items-center justify-between gap-3">
+        <div className="bg-slate-50 dark:bg-slate-900/90 p-4 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between gap-3">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={handleShare}
-            className="flex-1 gap-1.5 bg-white"
+            className="flex-1 gap-1.5 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
           >
             <Share2 className="h-4 w-4" />
             Share
@@ -293,7 +293,7 @@ export function TransactionReceiptModal({
             variant="default"
             size="sm"
             onClick={handleDownload}
-            className="flex-1 gap-1.5 bg-[#002D62] text-white hover:bg-[#00224b]"
+            className="flex-1 gap-1.5 bg-[#002D62] dark:bg-[#D4AF37] text-white dark:text-slate-950 hover:bg-[#00224b] dark:hover:bg-[#c49f2e] font-semibold"
           >
             <Download className="h-4 w-4" />
             Download

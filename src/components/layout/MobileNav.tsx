@@ -16,7 +16,7 @@ export function MobileNav({
 }: MobileNavProps) {
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 border-t border-slate-200 backdrop-blur-md px-2 py-1.5 transition-colors shadow-lg"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#060e1f]/95 border-t border-slate-200 dark:border-slate-800 backdrop-blur-md px-2 py-1.5 transition-colors shadow-lg"
       aria-label="Mobile Bottom Navigation"
     >
       <div className="grid grid-cols-4 items-center justify-around">
@@ -27,8 +27,8 @@ export function MobileNav({
           className={cn(
             "flex flex-col items-center justify-center py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer min-h-11",
             activeTab === "dashboard"
-              ? "text-[#002D62]"
-              : "text-slate-500 hover:text-slate-800",
+              ? "text-[#002D62] dark:text-[#D4AF37]"
+              : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200",
           )}
           aria-current={activeTab === "dashboard" ? "page" : undefined}
         >
@@ -43,8 +43,8 @@ export function MobileNav({
           className={cn(
             "flex flex-col items-center justify-center py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer min-h-11",
             activeTab === "transactions"
-              ? "text-[#002D62]"
-              : "text-slate-500 hover:text-slate-800",
+              ? "text-[#002D62] dark:text-[#D4AF37]"
+              : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200",
           )}
           aria-current={activeTab === "transactions" ? "page" : undefined}
         >
@@ -56,7 +56,7 @@ export function MobileNav({
         <button
           type="button"
           onClick={onOpenSendMoney}
-          className="flex flex-col items-center justify-center py-1.5 text-xs font-semibold rounded-lg text-slate-900 transition-colors cursor-pointer min-h-11"
+          className="flex flex-col items-center justify-center py-1.5 text-xs font-semibold rounded-lg text-slate-900 dark:text-slate-100 transition-colors cursor-pointer min-h-11"
         >
           <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#D4AF37] text-slate-950 shadow-2xs mb-0.5 font-bold">
             <Send className="h-3.5 w-3.5" />

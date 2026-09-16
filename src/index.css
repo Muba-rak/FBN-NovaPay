@@ -32,6 +32,8 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f8fafc; /* slate-50 */
   --foreground: #0f172a; /* slate-900 */
@@ -65,6 +67,43 @@
 
   --fbn-navy: #002d62;
   --fbn-deep-navy: #001a3a;
+  --fbn-gold: #d4af37;
+  --fbn-gold-light: #f3e5ab;
+  --fbn-emerald: #10b981;
+  --fbn-crimson: #ef4444;
+}
+
+.dark {
+  --background: #060e1f; /* FirstBank ultra-deep midnight navy */
+  --foreground: #f8fafc; /* slate-50 */
+
+  --card: #0b1736; /* Deep navy card */
+  --card-foreground: #f8fafc;
+
+  --popover: #0b1736;
+  --popover-foreground: #f8fafc;
+
+  --primary: #d4af37; /* Gold accent */
+  --primary-foreground: #001a3a;
+
+  --secondary: #12214a;
+  --secondary-foreground: #f8fafc;
+
+  --muted: #0d1a3e;
+  --muted-foreground: #94a3b8; /* slate-400 */
+
+  --accent: #d4af37; /* FirstBank Gold */
+  --accent-foreground: #001a3a;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  --border: #162752; /* Slate-navy border */
+  --input: #162752;
+  --ring: #d4af37;
+
+  --fbn-navy: #1b3877;
+  --fbn-deep-navy: #040914;
   --fbn-gold: #d4af37;
   --fbn-gold-light: #f3e5ab;
   --fbn-emerald: #10b981;

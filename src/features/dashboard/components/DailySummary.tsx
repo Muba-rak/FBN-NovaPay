@@ -22,13 +22,13 @@ export function DailySummary({ balance, isLoading }: DailySummaryProps) {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="h-28 rounded-2xl border border-slate-200/90 bg-white p-5 space-y-3 shadow-xs"
+            className="h-28 rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0b1736] p-5 space-y-3 shadow-xs"
           >
             <div className="flex justify-between items-center">
-              <div className="h-3 w-24 bg-slate-100 rounded" />
-              <div className="h-8 w-8 bg-slate-100 rounded-lg" />
+              <div className="h-3 w-24 bg-slate-100 dark:bg-slate-800 rounded" />
+              <div className="h-8 w-8 bg-slate-100 dark:bg-slate-800 rounded-lg" />
             </div>
-            <div className="h-6 w-32 bg-slate-100 rounded" />
+            <div className="h-6 w-32 bg-slate-100 dark:bg-slate-800 rounded" />
           </div>
         ))}
       </div>
@@ -46,13 +46,13 @@ export function DailySummary({ balance, isLoading }: DailySummaryProps) {
       id: "inflow",
       label: "Today's Inflow",
       amount: formatKoboToNaira(inflowKobo),
-      amountClassName: "text-slate-900",
+      amountClassName: "text-slate-900 dark:text-slate-50",
       icon: ArrowDownLeft,
       iconContainerClassName:
-        "bg-emerald-50 text-emerald-600 border-emerald-200/60",
-      cardHoverClassName: "hover:border-emerald-400/60",
+        "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-900/60",
+      cardHoverClassName: "hover:border-emerald-400/60 dark:hover:border-emerald-500/60",
       subtitle: (
-        <div className="flex items-center space-x-1.5 mt-1 text-[11px] font-medium text-emerald-600">
+        <div className="flex items-center space-x-1.5 mt-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
           <TrendingUp className="h-3 w-3" />
           <span>POS & QR Collections</span>
         </div>
@@ -62,12 +62,12 @@ export function DailySummary({ balance, isLoading }: DailySummaryProps) {
       id: "outflow",
       label: "Today's Outflow",
       amount: formatKoboToNaira(outflowKobo),
-      amountClassName: "text-slate-900",
+      amountClassName: "text-slate-900 dark:text-slate-50",
       icon: ArrowUpRight,
-      iconContainerClassName: "bg-red-50 text-red-600 border-red-200/60",
-      cardHoverClassName: "hover:border-red-400/60",
+      iconContainerClassName: "bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 border-red-200/60 dark:border-red-900/60",
+      cardHoverClassName: "hover:border-red-400/60 dark:hover:border-red-500/60",
       subtitle: (
-        <div className="flex items-center space-x-1.5 mt-1 text-[11px] font-medium text-red-600">
+        <div className="flex items-center space-x-1.5 mt-1 text-[11px] font-medium text-red-600 dark:text-red-400">
           <span>Transfers & Supplier Payouts</span>
         </div>
       ),
@@ -76,12 +76,12 @@ export function DailySummary({ balance, isLoading }: DailySummaryProps) {
       id: "net-flow",
       label: "Net Today",
       amount: formatKoboToNaira(netFlowKobo, { showSign: true }),
-      amountClassName: netFlowKobo >= 0 ? "text-[#002D62]" : "text-red-600",
+      amountClassName: netFlowKobo >= 0 ? "text-[#002D62] dark:text-[#D4AF37]" : "text-red-600 dark:text-red-400",
       icon: Scale,
-      iconContainerClassName: "bg-blue-50 text-[#002D62] border-blue-200/60",
-      cardHoverClassName: "hover:border-[#002D62]/40",
+      iconContainerClassName: "bg-blue-50 dark:bg-blue-950/50 text-[#002D62] dark:text-blue-300 border-blue-200/60 dark:border-blue-900/60",
+      cardHoverClassName: "hover:border-[#002D62]/40 dark:hover:border-blue-400/40",
       subtitle: (
-        <div className="flex items-center space-x-1.5 mt-1 text-[11px] font-medium text-slate-500">
+        <div className="flex items-center space-x-1.5 mt-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
           <span>Net Liquidity Balance</span>
         </div>
       ),
@@ -90,12 +90,12 @@ export function DailySummary({ balance, isLoading }: DailySummaryProps) {
       id: "pending-settlement",
       label: "Pending Settlement",
       amount: formatKoboToNaira(pendingKobo),
-      amountClassName: "text-slate-900",
+      amountClassName: "text-slate-900 dark:text-slate-50",
       icon: Clock,
-      iconContainerClassName: "bg-amber-50 text-amber-700 border-amber-200/60",
-      cardHoverClassName: "hover:border-amber-400/60",
+      iconContainerClassName: "bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 border-amber-200/60 dark:border-amber-900/60",
+      cardHoverClassName: "hover:border-amber-400/60 dark:hover:border-amber-500/60",
       subtitle: (
-        <div className="flex items-center space-x-1.5 mt-1 text-[11px] font-medium text-amber-700">
+        <div className="flex items-center space-x-1.5 mt-1 text-[11px] font-medium text-amber-700 dark:text-amber-400">
           <CreditCard className="h-3 w-3" />
           <span>4 Terminals • T+1 Settlement</span>
         </div>
@@ -114,7 +114,7 @@ export function DailySummary({ balance, isLoading }: DailySummaryProps) {
           >
             <CardContent className="p-5">
               <div className="flex items-center justify-between p-2">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-slate-500 dark:text-white uppercase tracking-wider">
                   {item.label}
                 </span>
                 <div
@@ -125,7 +125,7 @@ export function DailySummary({ balance, isLoading }: DailySummaryProps) {
               </div>
               <div className="mt-2.5">
                 <div
-                  className={`text-xl sm:text-2xl font-black tabular-nums tracking-tight ${item.amountClassName}`}
+                  className={`text-xl sm:text-2xl font-black dark:text-white tabular-nums tracking-tight ${item.amountClassName}`}
                 >
                   {item.amount}
                 </div>

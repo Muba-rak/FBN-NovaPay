@@ -20,7 +20,7 @@ export function AppShell({
   const [isSimBarOpen, setIsSimBarOpen] = React.useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-950 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#060e1f] text-slate-950 dark:text-slate-50 flex flex-col font-sans transition-colors duration-200">
       {/* Top Header */}
       <Header onOpenSendMoney={onOpenSendMoney} />
 

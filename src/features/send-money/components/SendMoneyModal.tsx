@@ -140,19 +140,19 @@ export function SendMoneyModal({ isOpen, onClose }: SendMoneyModalProps) {
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-[480px] p-0 overflow-hidden flex flex-col max-h-[90vh]">
         {step !== "success" && (
-          <DialogHeader className="p-5 sm:p-6 pb-3.5 border-b border-slate-100/90 bg-white shrink-0 space-y-2">
+          <DialogHeader className="p-5 sm:p-6 pb-3.5 border-b border-slate-100/90 dark:border-slate-800/90 bg-white dark:bg-[#0b1736] shrink-0 space-y-2">
             <div className="flex items-center justify-between pr-7">
-              <DialogTitle className="flex items-center gap-2 text-base sm:text-lg font-bold text-slate-900">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-[#002D62] border border-blue-200/60">
+              <DialogTitle className="flex items-center gap-2 text-base sm:text-lg font-bold text-slate-900 dark:text-slate-50">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/50 text-[#002D62] dark:text-[#D4AF37] border border-blue-200/60 dark:border-blue-900/60">
                   <Send className="h-3.5 w-3.5" />
                 </div>
                 <span>Send Money</span>
               </DialogTitle>
-              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-bold text-slate-600 border border-slate-200 shrink-0">
+              <span className="rounded-full bg-slate-100 dark:bg-slate-900 px-2.5 py-0.5 text-[11px] font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 shrink-0">
                 Step {getStepNumber()} of 4
               </span>
             </div>
-            <DialogDescription className="text-xs text-slate-500">
+            <DialogDescription className="text-xs text-slate-500 dark:text-slate-400">
               Instant NIBSS NIP Interbank Settlement
             </DialogDescription>
 
@@ -162,7 +162,7 @@ export function SendMoneyModal({ isOpen, onClose }: SendMoneyModalProps) {
                 <div
                   key={s}
                   className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                    s <= getStepNumber() ? "bg-[#002D62]" : "bg-slate-100"
+                    s <= getStepNumber() ? "bg-[#002D62] dark:bg-[#D4AF37]" : "bg-slate-100 dark:bg-slate-800"
                   }`}
                 />
               ))}
@@ -170,7 +170,7 @@ export function SendMoneyModal({ isOpen, onClose }: SendMoneyModalProps) {
           </DialogHeader>
         )}
 
-        <div className="p-5 sm:p-6 overflow-y-auto max-h-[calc(90vh-110px)]">
+        <div className="p-5 sm:p-6 overflow-y-auto max-h-[calc(90vh-110px)] bg-white dark:bg-[#0b1736]">
           {step === "recipient" && (
             <StepRecipient
               selectedBankCode={selectedBank?.code || ""}

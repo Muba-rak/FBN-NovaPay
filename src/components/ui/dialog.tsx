@@ -58,7 +58,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-2xl bg-white p-6 text-sm text-slate-900 shadow-2xl border border-slate-200 duration-150 outline-none sm:max-w-md data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
+          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-2xl bg-white dark:bg-[#0b1736] p-6 text-sm text-slate-900 dark:text-slate-50 shadow-2xl border border-slate-200 dark:border-slate-800 duration-150 outline-none sm:max-w-md data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
           className
         )}
         {...props}
@@ -68,7 +68,7 @@ function DialogContent({
           <DialogPrimitive.Close data-slot="dialog-close" asChild>
             <Button
               variant="ghost"
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 h-8 w-8 p-0"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 h-8 w-8 p-0"
               size="icon-sm"
               aria-label="Close dialog"
             >
@@ -126,7 +126,7 @@ function DialogTitle({
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn("text-lg font-bold leading-tight text-slate-900 tracking-tight", className)}
+      className={cn("text-lg font-bold leading-tight text-slate-900 dark:text-slate-50 tracking-tight", className)}
       {...props}
     />
   );
@@ -139,7 +139,7 @@ function DialogDescription({
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"
-      className={cn("text-xs text-slate-500", className)}
+      className={cn("text-xs text-slate-500 dark:text-slate-400", className)}
       {...props}
     />
   );
