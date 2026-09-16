@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { useTheme } from "./providers";
 import { BalanceCard } from "@/features/dashboard/components/BalanceCard";

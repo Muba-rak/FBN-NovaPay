@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 

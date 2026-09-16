@@ -1,9 +1,8 @@
-import React from 'react';
 import { SendMoneyResponse } from '../types';
 import { formatKoboToNaira } from '@/lib/format-money';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/toast';
-import { CheckCircle2, Download, Share2, ArrowRight, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, Download, Share2, ShieldCheck } from 'lucide-react';
 
 interface TransferSuccessModalProps {
   response: SendMoneyResponse;

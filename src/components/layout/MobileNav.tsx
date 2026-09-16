@@ -1,4 +1,3 @@
-import React from 'react';
 import { LayoutDashboard, Receipt, Send, Sliders } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

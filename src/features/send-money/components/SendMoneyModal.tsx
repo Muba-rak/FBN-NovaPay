@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Bank, SendMoneyPayload, SendMoneyResponse } from '../types';
 import { useSendMoney } from '../hooks/useSendMoney';
 import { StepRecipient } from './StepRecipient';
@@ -16,7 +16,7 @@ import {
 import { generateIdempotencyKey } from '@/lib/idempotency';
 import { NIP_TRANSFER_FEE_KOBO } from '@/lib/format-money';
 import { useToast } from '@/components/ui/toast';
-import { Send, CheckCircle2 } from 'lucide-react';
+import { Send } from 'lucide-react';
 
 interface SendMoneyModalProps {
   isOpen: boolean;

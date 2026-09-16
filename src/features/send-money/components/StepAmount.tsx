@@ -1,9 +1,7 @@
-import React from 'react';
 import { formatKoboToNaira, parseNairaInputToKobo, NIP_TRANSFER_FEE_KOBO, DAILY_TRANSFER_LIMIT_KOBO } from '@/lib/format-money';
 import { useBalance } from '@/features/dashboard/hooks/useBalance';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { AlertCircle, ArrowLeft, Wallet, Info } from 'lucide-react';
 
 interface StepAmountProps {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { WalletBalance } from '../types';
 import { formatKoboToNaira } from '@/lib/format-money';
 import { Button } from '@/components/ui/button';

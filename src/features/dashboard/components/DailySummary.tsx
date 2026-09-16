@@ -1,4 +1,3 @@
-import React from 'react';
 import { WalletBalance } from '../types';
 import { formatKoboToNaira } from '@/lib/format-money';
 import { Card, CardContent } from '@/components/ui/card';

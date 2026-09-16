@@ -1,7 +1,6 @@
-import React from 'react';
 import { formatKoboToNaira, NIP_TRANSFER_FEE_KOBO } from '@/lib/format-money';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ShieldCheck, ArrowRight, Lock } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, Lock } from 'lucide-react';
 
 interface StepReviewProps {
   recipientName: string;

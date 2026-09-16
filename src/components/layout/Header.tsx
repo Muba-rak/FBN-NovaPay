@@ -1,5 +1,4 @@
 import React from 'react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Send, Moon, Sun, ShieldCheck, Wifi, WifiOff, Terminal } from 'lucide-react';
 import { simulationConfig, subscribeSimulationConfig } from '@/mocks/config';

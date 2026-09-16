@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTransactions } from '../hooks/useTransactions';
 import { TransactionFilters } from './TransactionFilters';
 import { TransactionList } from './TransactionList';
@@ -33,7 +33,6 @@ export function TransactionFeed({ onOpenSendMoney }: TransactionFeedProps) {
     refetch,
     isFetching,
     filters,
-    debouncedSearch,
     setDateRange,
     setStatus,
     setType,

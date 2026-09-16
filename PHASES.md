@@ -6,18 +6,18 @@ This document tracks all implementation phases for the **FirstBank NovaBiz Merch
 
 ## 🚦 Phase Status Summary
 
-| Phase        | Description                                 | Status               | Deliverables & Highlights                                                              |
-| :----------- | :------------------------------------------ | :------------------- | :------------------------------------------------------------------------------------- |
-| **Phase 1**  | Project Initialization & Tooling            | ✅ **Completed**     | Vite, React 19, TypeScript, Vitest, Tailwind CSS, Playwright                           |
-| **Phase 2**  | Core Currency & Precision Engine            | ✅ **Completed**     | Kobo integer engine, floating-point safety, idempotency UUID v4                        |
-| **Phase 3**  | Mock Service Worker (MSW) & Seed Data       | ✅ **Completed**     | 1,000+ realistic seed transactions, bank directory, NIBSS name inquiry                 |
-| **Phase 4**  | FirstBank Visual Design System              | ✅ **Completed**     | Navy & Gold palette, responsive layout, shadcn tokens, typography                      |
-| **Phase 5**  | Merchant Dashboard & Daily Telemetry        | ✅ **Completed**     | BalanceCard, balance hide/reveal toggle, DailySummary, ThemeProvider                   |
-| **Phase 6**  | Virtualized Transaction Feed & Filters      | ✅ **Completed**     | `react-window` 60fps feed, status/type/date chips, debounced search, receipt modal     |
-| **Phase 7**  | Multi-Step Send Money & Optimistic Rollback | ✅ **Completed**     | 4-step transfer modal, auto NIBSS name resolution, optimistic debit, snapshot rollback |
-| **Phase 8**  | Interactive Network Simulation Panel        | 🟡 **Next (Active)** | Floating dev bar: latency slider (0-3000ms), fail rate (0-100%), offline toggle        |
-| **Phase 9**  | E2E Testing, A11y Audit & WCAG AA Polish    | ⏳ **Upcoming**      | Playwright flows (happy path & rollback), screen reader testing, 360px mobile audit    |
-| **Phase 10** | Production Verification & AI Usage Report   | ⏳ **Upcoming**      | `AI_USAGE.md` prompt report, bug resolutions, production build verification            |
+| Phase        | Description                                 | Status           | Deliverables & Highlights                                                              |
+| :----------- | :------------------------------------------ | :--------------- | :------------------------------------------------------------------------------------- |
+| **Phase 1**  | Project Initialization & Tooling            | ✅ **Completed** | Vite, React 19, TypeScript, Vitest, Tailwind CSS, Playwright                           |
+| **Phase 2**  | Core Currency & Precision Engine            | ✅ **Completed** | Kobo integer engine, floating-point safety, idempotency UUID v4                        |
+| **Phase 3**  | Mock Service Worker (MSW) & Seed Data       | ✅ **Completed** | 1,000+ realistic seed transactions, bank directory, NIBSS name inquiry                 |
+| **Phase 4**  | FirstBank Visual Design System              | ✅ **Completed** | Navy & Gold palette, responsive layout, shadcn tokens, typography                      |
+| **Phase 5**  | Merchant Dashboard & Daily Telemetry        | ✅ **Completed** | BalanceCard, balance hide/reveal toggle, DailySummary, ThemeProvider                   |
+| **Phase 6**  | Virtualized Transaction Feed & Filters      | ✅ **Completed** | `react-window` 60fps feed, status/type/date chips, debounced search, receipt modal     |
+| **Phase 7**  | Multi-Step Send Money & Optimistic Rollback | ✅ **Completed** | 4-step transfer modal, auto NIBSS name resolution, optimistic debit, snapshot rollback |
+| **Phase 8**  | Interactive Network Simulation Panel        | ✅ **Completed** | Floating dev bar: latency slider (0-3000ms), fail rate (0-100%), offline toggle, tests |
+| **Phase 9**  | E2E Testing, A11y Audit & WCAG AA Polish    | ✅ **Completed** | Playwright flows (happy path & rollback), screen reader testing, 360px mobile audit    |
+| **Phase 10** | Production Verification & AI Usage Report   | ✅ **Completed** | `AI_USAGE.md` prompt report, README architecture guide, production build verification  |
 
 ---
 
@@ -28,7 +28,7 @@ This document tracks all implementation phases for the **FirstBank NovaBiz Merch
 - [x] Initialized Vite React + TypeScript boilerplate
 - [x] Configured Path Aliases (`@/*` -> `./src/*`)
 - [x] Configured Vitest, Testing Library, and Playwright
-- [x] Added architectural skill guides in `skills/`
+- [x] Added architectural skill guides in `.agents/skills/`
 
 ### ✅ Phase 2: Core Utilities & Precision Engine
 
@@ -98,21 +98,24 @@ This document tracks all implementation phases for the **FirstBank NovaBiz Merch
 
 ---
 
-### ⏳ Phase 8: Interactive Network Simulation DevTools Panel
+### ✅ Phase 8: Interactive Network Simulation DevTools Panel
 
-- [ ] Floating/collapsible bottom dev panel for reviewer testing
-- [ ] Live latency slider (0ms to 3,000ms)
-- [ ] Failure rate slider (0% to 100%)
-- [ ] Simulated offline mode toggle
-- [ ] Mock database reset CTA
+- [x] Floating/collapsible bottom dev panel for reviewer testing (`SimulationBar.tsx`)
+- [x] Live latency slider (0ms to 3,000ms) with presets (`0ms`, `150ms`, `800ms`, `2500ms`)
+- [x] Failure rate test chips (`0%`, `25%`, `50%`, `100%`)
+- [x] Simulated offline mode toggle
+- [x] Mock database reset CTA restoring initial ledger & balance
+- [x] Global keyboard shortcut `Ctrl+Shift+D` to toggle DevTools panel
+- [x] Unit test suite `SimulationBar.test.tsx` (7 tests passing)
 
-### ⏳ Phase 9: End-to-End Testing & WCAG AA Accessibility Audit
+### ✅ Phase 9: End-to-End Testing & WCAG AA Accessibility Audit
 
-- [ ] Playwright E2E tests: Complete Send Money flow, Instant Settlement, and Failure Rollback
-- [ ] Mobile responsive layout audit (360px viewport on mobile Android)
-- [ ] Keyboard trap, Focus restoration, and WCAG AA contrast audit
+- [x] Playwright E2E: `e2e/send-money.spec.ts` (Complete Send Money flow with NIBSS verification & receipt modal)
+- [x] Playwright E2E: `e2e/send-money-failure.spec.ts` (100% failure rate optimistic balance deduction & snapshot rollback)
+- [x] Playwright E2E: `e2e/mobile-responsive.spec.ts` (360px Android POS viewport, 44px touch targets, dark mode, keyboard trapping & Escape handling)
 
-### ⏳ Phase 10: Production Polish & AI Usage Report
+### ✅ Phase 10: Production Verification & AI Usage Report
 
-- [ ] Build verification (`npm run build` / `tsc -b && vite build`)
-- [ ] Complete `README.md` and `AI_USAGE.md` report
+- [x] Production build verification (`npm run build` / `tsc -b && vite build`)
+- [x] Comprehensive `AI_USAGE.md` documenting 3 AI prompts, outputs, critiques, and caught financial hallucinations
+- [x] Complete `README.md` with system architecture, token guide, skill cheatsheets, and setup guide

@@ -1,7 +1,7 @@
 import { http, HttpResponse, delay } from 'msw';
 import { seedTransactions } from '../data/transactions';
 import { simulationConfig } from '../config';
-import { Transaction, TransactionsResponse } from '@/features/transactions/types';
+import { TransactionsResponse } from '@/features/transactions/types';
 
 export const transactionHandlers = [
   http.get('/api/transactions', async ({ request }) => {

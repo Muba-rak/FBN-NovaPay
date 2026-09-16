@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { formatKoboToNaira, NIP_TRANSFER_FEE_KOBO } from "@/lib/format-money";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Delete, Lock, Loader2, ShieldAlert } from "lucide-react";

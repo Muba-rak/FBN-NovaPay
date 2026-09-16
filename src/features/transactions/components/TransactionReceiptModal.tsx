@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Transaction } from '../types';
 import { formatKoboToNaira } from '@/lib/format-money';
 import {
@@ -20,7 +20,6 @@ import {
   Download,
   Share2,
   ShieldCheck,
-  FileText,
 } from 'lucide-react';
 
 interface TransactionReceiptModalProps {
@@ -43,7 +42,6 @@ export function TransactionReceiptModal({
   const isCredit = transaction.type === 'credit';
   const isSuccessful = transaction.status === 'successful';
   const isPending = transaction.status === 'pending';
-  const isFailed = transaction.status === 'failed';
 
   const handleCopy = (text: string, type: 'ref' | 'session') => {
     navigator.clipboard.writeText(text);
