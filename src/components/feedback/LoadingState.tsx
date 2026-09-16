@@ -21,18 +21,18 @@ export function LoadingState({
       {Array.from({ length: rows }).map((_, i) => (
         <div
           key={i}
-          className="flex items-center justify-between p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40"
+          className="flex items-center justify-between p-4 rounded-xl border border-slate-200/80 bg-slate-50/50"
         >
           <div className="flex items-center space-x-3.5">
-            <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800" />
+            <div className="w-10 h-10 rounded-full bg-slate-200" />
             <div className="space-y-2">
-              <div className="h-4 w-32 sm:w-48 bg-slate-200 dark:bg-slate-800 rounded" />
-              <div className="h-3 w-20 sm:w-32 bg-slate-200 dark:bg-slate-800 rounded" />
+              <div className="h-4 w-32 sm:w-48 bg-slate-200 rounded" />
+              <div className="h-3 w-20 sm:w-32 bg-slate-200 rounded" />
             </div>
           </div>
           <div className="space-y-2 text-right">
-            <div className="h-4 w-20 sm:w-28 bg-slate-200 dark:bg-slate-800 rounded ml-auto" />
-            <div className="h-3 w-14 bg-slate-200 dark:bg-slate-800 rounded ml-auto" />
+            <div className="h-4 w-20 sm:w-28 bg-slate-200 rounded ml-auto" />
+            <div className="h-3 w-14 bg-slate-200 rounded ml-auto" />
           </div>
         </div>
       ))}

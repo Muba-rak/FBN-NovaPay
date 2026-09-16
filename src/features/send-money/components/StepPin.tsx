@@ -68,13 +68,13 @@ export function StepPin({
 
       {/* Summary Glance */}
       <div className="text-center">
-        <div className="text-xs text-slate-500 dark:text-slate-400">
+        <div className="text-xs text-slate-500">
           Authorizing debit of
         </div>
-        <div className="text-xl font-black text-slate-900 dark:text-white tabular-nums">
+        <div className="text-xl font-black text-slate-900 tabular-nums">
           {formatKoboToNaira(totalDebitKobo)}
         </div>
-        <div className="text-xs text-slate-500 dark:text-slate-400">
+        <div className="text-xs text-slate-500">
           to <strong>{recipientName}</strong>
         </div>
       </div>
@@ -93,8 +93,8 @@ export function StepPin({
               key={index}
               className={`h-12 w-12 rounded-2xl border-2 flex items-center justify-center transition-all ${
                 isFilled
-                  ? "border-amber-500 bg-amber-50 dark:bg-amber-950/40 text-slate-900 dark:text-white text-2xl font-black"
-                  : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900"
+                  ? "border-[#002D62] bg-blue-50 text-[#002D62] text-2xl font-black shadow-xs"
+                  : "border-slate-200 bg-white shadow-2xs"
               }`}
             >
               {isFilled ? "•" : ""}
@@ -108,7 +108,7 @@ export function StepPin({
         <div
           role="alert"
           aria-live="assertive"
-          className="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-xs text-red-800 dark:bg-red-950/40 dark:text-red-300 border border-red-200/80 dark:border-red-900/40"
+          className="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-xs text-red-800 border border-red-200/80"
         >
           <ShieldAlert className="h-4 w-4 shrink-0 text-red-600" />
           <span>{errorMessage}</span>
@@ -116,13 +116,13 @@ export function StepPin({
       )}
 
       {/* Demo PIN Helper Note */}
-      <div className="text-center text-[11px] text-slate-500 dark:text-slate-400">
+      <div className="text-center text-[11px] text-slate-500">
         Demo PIN:{" "}
-        <strong className="font-mono text-amber-600 dark:text-amber-400">
+        <strong className="font-mono text-[#002D62]">
           1234
         </strong>{" "}
         or{" "}
-        <strong className="font-mono text-amber-600 dark:text-amber-400">
+        <strong className="font-mono text-[#002D62]">
           0000
         </strong>
       </div>
@@ -140,7 +140,7 @@ export function StepPin({
                 type="button"
                 onClick={handleBackspace}
                 disabled={pin.length === 0 || isSubmitting}
-                className="flex h-11 items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors disabled:opacity-40"
+                className="flex h-11 items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors disabled:opacity-40 cursor-pointer"
                 aria-label="Backspace"
               >
                 <Delete className="h-5 w-5" />
@@ -153,7 +153,7 @@ export function StepPin({
               type="button"
               onClick={() => handleKeyPress(k)}
               disabled={pin.length >= 4 || isSubmitting}
-              className="flex h-11 items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 font-bold text-lg text-slate-900 dark:text-white transition-colors disabled:opacity-40 shadow-xs active:scale-95"
+              className="flex h-11 items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-lg text-slate-900 transition-colors disabled:opacity-40 shadow-2xs active:scale-95 cursor-pointer"
             >
               {k}
             </button>
@@ -161,14 +161,14 @@ export function StepPin({
         })}
       </div>
 
-      {/* Action Buttons */}
+      {/* Submit / Back Actions */}
       <div className="flex items-center gap-2 pt-2">
         <Button
           type="button"
           variant="outline"
           onClick={onBack}
           disabled={isSubmitting}
-          className="h-11 px-4 gap-1.5"
+          className="h-11 px-4 gap-1.5 bg-white"
         >
           <ArrowLeft className="h-4 w-4" />
           Back
@@ -177,17 +177,17 @@ export function StepPin({
           type="button"
           onClick={onSubmit}
           disabled={pin.length !== 4 || isSubmitting}
-          className="flex-1 h-11 bg-[#002D62] text-white hover:bg-[#00224b] hover:text-white dark:bg-[#D4AF37] dark:text-slate-900 font-semibold gap-2"
+          className="flex-1 h-11 bg-[#002D62] text-white hover:bg-[#00224b] font-semibold gap-2 disabled:cursor-not-allowed shadow-xs"
         >
           {isSubmitting ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              Processing via NIBSS...
+              <span>Authorizing via NIP...</span>
             </>
           ) : (
             <>
               <Lock className="h-4 w-4" />
-              Authorize Transfer
+              <span>Authorize Transfer</span>
             </>
           )}
         </Button>

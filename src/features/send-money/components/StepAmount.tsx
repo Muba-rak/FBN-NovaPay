@@ -59,15 +59,15 @@ export function StepAmount({
   return (
     <div className="space-y-4">
       {/* Recipient Badge */}
-      <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3 text-xs dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+      <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3 text-xs border border-slate-200">
         <div>
-          <span className="text-slate-500 dark:text-slate-400">
+          <span className="text-slate-500">
             Sending to:
           </span>
-          <div className="font-bold text-slate-900 dark:text-white truncate max-w-50">
+          <div className="font-bold text-slate-900 truncate max-w-50">
             {recipientName}
           </div>
-          <div className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
+          <div className="font-mono text-[11px] text-slate-500">
             {recipientBankName} • {recipientAccount}
           </div>
         </div>
@@ -75,19 +75,19 @@ export function StepAmount({
           variant="ghost"
           size="sm"
           onClick={onBack}
-          className="h-7 text-xs text-amber-600 dark:text-amber-400"
+          className="h-7 text-xs text-amber-700 hover:bg-amber-50"
         >
           Edit
         </Button>
       </div>
 
       {/* Available Balance Glance */}
-      <div className="flex items-center justify-between text-xs px-1 text-slate-600 dark:text-slate-400">
+      <div className="flex items-center justify-between text-xs px-1 text-slate-600">
         <span className="flex items-center gap-1.5">
           <Wallet className="h-3.5 w-3.5 text-amber-500" />
           Available Wallet Balance:
         </span>
-        <span className="font-mono font-bold text-slate-900 dark:text-white">
+        <span className="font-mono font-bold text-slate-900">
           {formatKoboToNaira(availableBalanceKobo)}
         </span>
       </div>
@@ -96,7 +96,7 @@ export function StepAmount({
       <div>
         <label
           htmlFor="transfer-amount"
-          className="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1.5"
+          className="block text-xs font-semibold text-slate-700 mb-1.5"
         >
           Transfer Amount (NGN)
         </label>
@@ -130,10 +130,10 @@ export function StepAmount({
             key={q.kobo}
             type="button"
             onClick={() => onChangeAmountKobo(q.kobo)}
-            className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all ${
+            className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all cursor-pointer ${
               amountKobo === q.kobo
-                ? "bg-[#002D62] text-white dark:bg-[#D4AF37] dark:text-slate-900 shadow-xs"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                ? "bg-[#002D62] text-white shadow-2xs font-semibold"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
             }`}
           >
             {q.label}
@@ -144,7 +144,7 @@ export function StepAmount({
       {/* Validation Warnings */}
       {isExceedingBalance && (
         <div
-          className="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-xs text-red-800 dark:bg-red-950/40 dark:text-red-300 border border-red-200/80 dark:border-red-900/40"
+          className="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-xs text-red-800 border border-red-200/80"
           role="alert"
         >
           <AlertCircle className="h-4 w-4 shrink-0 text-red-600" />
@@ -161,7 +161,7 @@ export function StepAmount({
 
       {isExceedingDailyLimit && (
         <div
-          className="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-xs text-red-800 dark:bg-red-950/40 dark:text-red-300 border border-red-200/80 dark:border-red-900/40"
+          className="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-xs text-red-800 border border-red-200/80"
           role="alert"
         >
           <AlertCircle className="h-4 w-4 shrink-0 text-red-600" />
@@ -176,7 +176,7 @@ export function StepAmount({
       <div>
         <label
           htmlFor="transfer-narration"
-          className="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1.5"
+          className="block text-xs font-semibold text-slate-700 mb-1.5"
         >
           Payment Narration / Remark (Optional)
         </label>
@@ -192,7 +192,7 @@ export function StepAmount({
       </div>
 
       {/* Fee Transparency Note */}
-      <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-2.5 text-[11px] text-slate-600 dark:bg-slate-900/50 dark:text-slate-400">
+      <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-2.5 text-[11px] text-slate-600 border border-slate-200/70">
         <Info className="h-3.5 w-3.5 text-amber-500 shrink-0" />
         <span>Standard NIBSS NIP Fee: ₦10.00 + ₦0.75 VAT (₦10.75 total).</span>
       </div>
@@ -203,7 +203,7 @@ export function StepAmount({
           type="button"
           variant="outline"
           onClick={onBack}
-          className="h-11 px-4 gap-1.5"
+          className="h-11 px-4 gap-1.5 bg-white"
         >
           <ArrowLeft className="h-4 w-4" />
           Back
@@ -212,7 +212,7 @@ export function StepAmount({
           type="button"
           onClick={onNext}
           disabled={!isValid}
-          className="flex-1 h-11 bg-[#002D62] text-white hover:bg-[#00224b] hover:text-white dark:bg-[#D4AF37] dark:text-slate-900 font-semibold disabled:cursor-not-allowed"
+          className="flex-1 h-11 bg-[#002D62] text-white hover:bg-[#00224b] font-semibold disabled:cursor-not-allowed shadow-xs"
         >
           Review Transfer
         </Button>
@@ -220,3 +220,4 @@ export function StepAmount({
     </div>
   );
 }
+

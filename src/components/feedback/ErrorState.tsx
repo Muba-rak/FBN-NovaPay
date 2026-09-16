@@ -22,17 +22,17 @@ export function ErrorState({
       role="alert"
       aria-live="assertive"
       className={cn(
-        'flex flex-col items-center justify-center text-center p-6 sm:p-8 rounded-2xl border border-red-200/80 bg-red-50/50 dark:border-red-900/50 dark:bg-red-950/30',
+        'flex flex-col items-center justify-center text-center p-6 sm:p-8 rounded-2xl border border-red-200/80 bg-red-50/50',
         className
       )}
     >
-      <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400 mb-3.5">
+      <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600 mb-3.5">
         <AlertTriangle className="h-6 w-6" />
       </div>
-      <h3 className="text-base font-semibold text-red-950 dark:text-red-200 mb-1">
+      <h3 className="text-base font-bold text-red-950 mb-1">
         {title}
       </h3>
-      <p className="text-xs sm:text-sm text-red-700 dark:text-red-300 max-w-sm mb-4">
+      <p className="text-xs sm:text-sm text-red-700 max-w-sm mb-4">
         {message}
       </p>
       {onRetry && (

@@ -50,8 +50,7 @@ export function TransactionFilters({
   totalFilteredCount,
 }: TransactionFiltersProps) {
   return (
-    <div className="space-y-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-[#112240]">
-      
+    <div className="space-y-3 rounded-2xl border border-slate-200/80 bg-slate-50/50 p-4">
       {/* Top Row: Search & Reset */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
         {/* Search Bar */}
@@ -59,7 +58,7 @@ export function TransactionFilters({
           <label htmlFor="tx-search" className="sr-only">
             Search transactions by name, reference, or narration
           </label>
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <Input
             id="tx-search"
             type="text"
@@ -72,7 +71,7 @@ export function TransactionFilters({
             <button
               type="button"
               onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
               aria-label="Clear search input"
             >
               <X className="h-4 w-4" />
@@ -83,8 +82,8 @@ export function TransactionFilters({
         {/* Results Counter & Reset Button */}
         <div className="flex items-center justify-between sm:justify-end gap-2">
           {totalFilteredCount !== undefined && (
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
-              <span className="font-semibold text-slate-900 dark:text-white tabular-nums">
+            <span className="text-xs font-medium text-slate-500 px-1">
+              <span className="font-bold text-slate-900 tabular-nums">
                 {totalFilteredCount.toLocaleString()}
               </span>{' '}
               records
@@ -97,7 +96,7 @@ export function TransactionFilters({
               variant="ghost"
               size="sm"
               onClick={onResetFilters}
-              className="h-8 gap-1.5 text-xs text-amber-600 hover:bg-amber-50 hover:text-amber-700 dark:text-amber-400 dark:hover:bg-amber-950/40"
+              className="h-8 gap-1.5 text-xs text-amber-700 hover:bg-amber-50 hover:text-amber-800"
             >
               <RotateCcw className="h-3 w-3" />
               Reset Filters
@@ -107,9 +106,8 @@ export function TransactionFilters({
       </div>
 
       {/* Filter Chips / Segments */}
-      <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800/80">
-        
-        <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1">
+      <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-200/70">
+        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500 mr-1 uppercase tracking-wider">
           <Filter className="h-3.5 w-3.5" />
           <span>Filters:</span>
         </div>
@@ -124,10 +122,10 @@ export function TransactionFilters({
                 type="button"
                 onClick={() => onDateRangeChange(opt.value)}
                 aria-pressed={isSelected}
-                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all ${
+                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-[#002D62] text-white dark:bg-[#D4AF37] dark:text-slate-900 shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                    ? 'bg-[#002D62] text-white shadow-2xs font-semibold'
+                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-950 shadow-2xs'
                 }`}
               >
                 {opt.label}
@@ -136,7 +134,7 @@ export function TransactionFilters({
           })}
         </div>
 
-        <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 hidden sm:block mx-1" />
+        <div className="h-4 w-px bg-slate-200 hidden sm:block mx-1" />
 
         {/* Status Chips */}
         <div className="flex flex-wrap gap-1" role="group" aria-label="Status filter">
@@ -148,10 +146,10 @@ export function TransactionFilters({
                 type="button"
                 onClick={() => onStatusChange(opt.value)}
                 aria-pressed={isSelected}
-                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all ${
+                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-[#002D62] text-white dark:bg-[#D4AF37] dark:text-slate-900 shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                    ? 'bg-[#002D62] text-white shadow-2xs font-semibold'
+                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-950 shadow-2xs'
                 }`}
               >
                 {opt.label}
@@ -160,7 +158,7 @@ export function TransactionFilters({
           })}
         </div>
 
-        <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 hidden sm:block mx-1" />
+        <div className="h-4 w-px bg-slate-200 hidden sm:block mx-1" />
 
         {/* Type Chips */}
         <div className="flex flex-wrap gap-1" role="group" aria-label="Transaction type filter">
@@ -172,10 +170,10 @@ export function TransactionFilters({
                 type="button"
                 onClick={() => onTypeChange(opt.value)}
                 aria-pressed={isSelected}
-                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all ${
+                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-[#002D62] text-white dark:bg-[#D4AF37] dark:text-slate-900 shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                    ? 'bg-[#002D62] text-white shadow-2xs font-semibold'
+                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-950 shadow-2xs'
                 }`}
               >
                 {opt.label}
@@ -183,9 +181,8 @@ export function TransactionFilters({
             );
           })}
         </div>
-
       </div>
-
     </div>
   );
 }
+

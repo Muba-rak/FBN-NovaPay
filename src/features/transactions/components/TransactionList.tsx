@@ -55,7 +55,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({
     <div
       role="region"
       aria-label="Virtualized transaction history list"
-      className="w-full rounded-2xl border border-slate-200/80 bg-slate-50/50 p-2.5 dark:border-slate-800 dark:bg-slate-900/40"
+      className="w-full rounded-2xl border border-slate-200/80 bg-slate-50/50 p-2.5"
     >
       <List
         rowCount={transactions.length}

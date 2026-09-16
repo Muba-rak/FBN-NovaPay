@@ -192,7 +192,7 @@ export function BalanceCard({
       </div>
 
       {/* Quick Action Buttons */}
-      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
         {/* Send Money Button */}
         <Button
           onClick={onOpenSendMoney}

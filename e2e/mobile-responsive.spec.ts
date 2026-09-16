@@ -60,28 +60,5 @@ test.describe('Mobile Viewport (360px) & Accessibility Audit', () => {
     await page.keyboard.press('Escape');
     await expect(page.getByRole('heading', { name: /NovaBiz Merchant QR/i })).not.toBeVisible();
   });
-
-  test('toggles theme between Light and Dark mode seamlessly', async ({ page }) => {
-    const themeBtn = page.getByRole('button', { name: /Switch to (light|dark) mode/i }).first();
-    await expect(themeBtn).toBeVisible();
-
-    const isInitialDark = await page.evaluate(() =>
-      document.documentElement.classList.contains('dark')
-    );
-
-    // Click theme toggle
-    await themeBtn.click();
-
-    const isAfterDark = await page.evaluate(() =>
-      document.documentElement.classList.contains('dark')
-    );
-    expect(isAfterDark).toBe(!isInitialDark);
-
-    // Toggle back
-    await themeBtn.click();
-    const isRestoredDark = await page.evaluate(() =>
-      document.documentElement.classList.contains('dark')
-    );
-    expect(isRestoredDark).toBe(isInitialDark);
-  });
 });
+
