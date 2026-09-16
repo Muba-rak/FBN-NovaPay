@@ -1,5 +1,5 @@
-import '@testing-library/jest-dom';
-import { afterEach } from 'vitest';
+import '@testing-library/jest-dom/vitest';
+import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
 
 // Automatically cleanup after each test
@@ -8,11 +8,15 @@ afterEach(() => {
 });
 
 // Mock ResizeObserver for virtualization / responsive tests
-global.ResizeObserver = class ResizeObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-};
+class ResizeObserverMock {
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+}
+
+window.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver;
+globalThis.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver;
 
 // Mock scrollTo
-window.scrollTo = () => {};
+window.scrollTo = vi.fn() as unknown as typeof window.scrollTo;
+
