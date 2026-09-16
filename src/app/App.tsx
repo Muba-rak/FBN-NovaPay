@@ -5,6 +5,7 @@ import { BalanceCard } from "@/features/dashboard/components/BalanceCard";
 import { DailySummary } from "@/features/dashboard/components/DailySummary";
 import { useBalance } from "@/features/dashboard/hooks/useBalance";
 import { TransactionFeed } from "@/features/transactions";
+import { SendMoneyModal } from "@/features/send-money";
 import { useToast } from "@/components/ui/toast";
 import { QrCode } from "lucide-react";
 import {
@@ -125,6 +126,12 @@ export function App() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Multi-Step Send Money Flow Modal */}
+      <SendMoneyModal
+        isOpen={isSendMoneyOpen}
+        onClose={() => setIsSendMoneyOpen(false)}
+      />
     </AppShell>
   );
 }
