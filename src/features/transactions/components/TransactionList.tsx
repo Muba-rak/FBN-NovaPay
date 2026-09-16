@@ -32,7 +32,7 @@ const Row = ({
   if (!tx) return null;
 
   return (
-    <div style={style} className="px-0.5 py-1">
+    <div style={style} className="px-1 py-1.5">
       <TransactionRow transaction={tx} onSelect={onSelect} />
     </div>
   );
@@ -55,11 +55,11 @@ export const TransactionList: React.FC<TransactionListProps> = ({
     <div
       role="region"
       aria-label="Virtualized transaction history list"
-      className="w-full rounded-2xl border border-slate-200/80 bg-slate-50/50 p-2 dark:border-slate-800 dark:bg-slate-900/40"
+      className="w-full rounded-2xl border border-slate-200/80 bg-slate-50/50 p-2.5 dark:border-slate-800 dark:bg-slate-900/40"
     >
       <List
         rowCount={transactions.length}
-        rowHeight={76}
+        rowHeight={86}
         rowComponent={Row}
         rowProps={rowProps}
         defaultHeight={height}
