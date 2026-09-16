@@ -1,6 +1,6 @@
-import { formatKoboToNaira, NIP_TRANSFER_FEE_KOBO } from '@/lib/format-money';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, ShieldCheck, Lock } from 'lucide-react';
+import { formatKoboToNaira, NIP_TRANSFER_FEE_KOBO } from "@/lib/format-money";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, ShieldCheck, Lock } from "lucide-react";
 
 interface StepReviewProps {
   recipientName: string;
@@ -28,7 +28,9 @@ export function StepReview({
     <div className="space-y-4">
       {/* Transfer Amount Highlight Hero */}
       <div className="rounded-2xl bg-[#002D62] p-5 text-center text-white dark:bg-[#0A192F] border border-amber-400/20 shadow-xs">
-        <span className="text-xs text-amber-300 font-medium">Total Transfer Amount</span>
+        <span className="text-xs text-amber-300 font-medium">
+          Total Transfer Amount
+        </span>
         <div className="mt-1 text-2xl sm:text-3xl font-black tabular-nums tracking-tight text-white">
           {formatKoboToNaira(amountKobo)}
         </div>
@@ -39,42 +41,55 @@ export function StepReview({
 
       {/* Breakdown Summary Grid */}
       <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 text-xs dark:border-slate-800 dark:bg-slate-900/50 space-y-2.5">
-        
         <div className="flex justify-between items-start">
-          <span className="text-slate-500 dark:text-slate-400">Beneficiary Name</span>
-          <span className="font-bold text-slate-900 dark:text-white text-right max-w-[200px]">
+          <span className="text-slate-500 dark:text-slate-400">
+            Beneficiary Name
+          </span>
+          <span className="font-bold text-slate-900 dark:text-white text-right max-w-50">
             {recipientName}
           </span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-slate-500 dark:text-slate-400">Destination Bank</span>
-          <span className="font-medium text-slate-900 dark:text-white">{recipientBankName}</span>
+          <span className="text-slate-500 dark:text-slate-400">
+            Destination Bank
+          </span>
+          <span className="font-medium text-slate-900 dark:text-white">
+            {recipientBankName}
+          </span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-slate-500 dark:text-slate-400">Account Number</span>
+          <span className="text-slate-500 dark:text-slate-400">
+            Account Number
+          </span>
           <span className="font-mono font-bold text-slate-900 dark:text-white">
             {recipientAccount}
           </span>
         </div>
 
         <div className="flex justify-between items-center pt-2 border-t border-slate-200 dark:border-slate-800">
-          <span className="text-slate-500 dark:text-slate-400">Transfer Amount</span>
+          <span className="text-slate-500 dark:text-slate-400">
+            Transfer Amount
+          </span>
           <span className="font-mono font-semibold text-slate-900 dark:text-white">
             {formatKoboToNaira(amountKobo)}
           </span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-slate-500 dark:text-slate-400">NIP Transfer Fee & VAT</span>
+          <span className="text-slate-500 dark:text-slate-400">
+            NIP Transfer Fee & VAT
+          </span>
           <span className="font-mono text-slate-700 dark:text-slate-300">
             {formatKoboToNaira(feeKobo)}
           </span>
         </div>
 
         <div className="flex justify-between items-center pt-2 border-t border-slate-200 dark:border-slate-800 text-sm">
-          <span className="font-bold text-slate-900 dark:text-white">Total Amount to Debit</span>
+          <span className="font-bold text-slate-900 dark:text-white">
+            Total Amount to Debit
+          </span>
           <span className="font-mono font-black text-[#002D62] dark:text-[#D4AF37]">
             {formatKoboToNaira(totalDebitKobo)}
           </span>
@@ -82,8 +97,10 @@ export function StepReview({
 
         {narration && (
           <div className="flex justify-between items-start pt-2 border-t border-slate-200 dark:border-slate-800">
-            <span className="text-slate-500 dark:text-slate-400">Narration</span>
-            <span className="font-medium text-slate-700 dark:text-slate-300 text-right max-w-[200px]">
+            <span className="text-slate-500 dark:text-slate-400">
+              Narration
+            </span>
+            <span className="font-medium text-slate-700 dark:text-slate-300 text-right max-w-50">
               {narration}
             </span>
           </div>
@@ -94,7 +111,8 @@ export function StepReview({
       <div className="flex items-center gap-2 rounded-xl bg-amber-50 p-3 text-xs text-amber-900 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200/80 dark:border-amber-900/40">
         <ShieldCheck className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
         <span>
-          Please confirm all details above. FirstBank instant NIP transfers are processed in real-time.
+          Please confirm all details above. FirstBank instant NIP transfers are
+          processed in real-time.
         </span>
       </div>
 

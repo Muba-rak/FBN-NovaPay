@@ -1,8 +1,13 @@
-import { formatKoboToNaira, parseNairaInputToKobo, NIP_TRANSFER_FEE_KOBO, DAILY_TRANSFER_LIMIT_KOBO } from '@/lib/format-money';
-import { useBalance } from '@/features/dashboard/hooks/useBalance';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { AlertCircle, ArrowLeft, Wallet, Info } from 'lucide-react';
+import {
+  formatKoboToNaira,
+  parseNairaInputToKobo,
+  NIP_TRANSFER_FEE_KOBO,
+  DAILY_TRANSFER_LIMIT_KOBO,
+} from "@/lib/format-money";
+import { useBalance } from "@/features/dashboard/hooks/useBalance";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { AlertCircle, ArrowLeft, Wallet, Info } from "lucide-react";
 
 interface StepAmountProps {
   amountKobo: number;
@@ -17,11 +22,11 @@ interface StepAmountProps {
 }
 
 const quickAmounts = [
-  { label: '₦5,000', kobo: 500000 },
-  { label: '₦10,000', kobo: 1000000 },
-  { label: '₦20,000', kobo: 2000000 },
-  { label: '₦50,000', kobo: 5000000 },
-  { label: '₦100,000', kobo: 10000000 },
+  { label: "₦5,000", kobo: 500000 },
+  { label: "₦10,000", kobo: 1000000 },
+  { label: "₦20,000", kobo: 2000000 },
+  { label: "₦50,000", kobo: 5000000 },
+  { label: "₦100,000", kobo: 10000000 },
 ];
 
 export function StepAmount({
@@ -39,9 +44,11 @@ export function StepAmount({
   const availableBalanceKobo = balance?.availableBalanceKobo ?? 0;
 
   const totalDebitKobo = amountKobo + NIP_TRANSFER_FEE_KOBO;
-  const isExceedingBalance = amountKobo > 0 && totalDebitKobo > availableBalanceKobo;
+  const isExceedingBalance =
+    amountKobo > 0 && totalDebitKobo > availableBalanceKobo;
   const isExceedingDailyLimit = amountKobo > DAILY_TRANSFER_LIMIT_KOBO;
-  const isValid = amountKobo > 0 && !isExceedingBalance && !isExceedingDailyLimit;
+  const isValid =
+    amountKobo > 0 && !isExceedingBalance && !isExceedingDailyLimit;
 
   const handleRawAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
@@ -54,15 +61,22 @@ export function StepAmount({
       {/* Recipient Badge */}
       <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3 text-xs dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
         <div>
-          <span className="text-slate-500 dark:text-slate-400">Sending to:</span>
-          <div className="font-bold text-slate-900 dark:text-white truncate max-w-[200px]">
+          <span className="text-slate-500 dark:text-slate-400">
+            Sending to:
+          </span>
+          <div className="font-bold text-slate-900 dark:text-white truncate max-w-50">
             {recipientName}
           </div>
           <div className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
             {recipientBankName} • {recipientAccount}
           </div>
         </div>
-        <Button variant="ghost" size="sm" onClick={onBack} className="h-7 text-xs text-amber-600 dark:text-amber-400">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onBack}
+          className="h-7 text-xs text-amber-600 dark:text-amber-400"
+        >
           Edit
         </Button>
       </div>
@@ -95,12 +109,14 @@ export function StepAmount({
             type="text"
             inputMode="decimal"
             placeholder="0.00"
-            value={amountKobo > 0 ? (amountKobo / 100).toLocaleString('en-US') : ''}
+            value={
+              amountKobo > 0 ? (amountKobo / 100).toLocaleString("en-US") : ""
+            }
             onChange={handleRawAmountChange}
             className={`font-mono text-xl font-bold pl-9 h-13 ${
               isExceedingBalance || isExceedingDailyLimit
-                ? 'border-red-500 focus-visible:ring-red-400'
-                : ''
+                ? "border-red-500 focus-visible:ring-red-400"
+                : ""
             }`}
             aria-invalid={isExceedingBalance || isExceedingDailyLimit}
           />
@@ -116,8 +132,8 @@ export function StepAmount({
             onClick={() => onChangeAmountKobo(q.kobo)}
             className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all ${
               amountKobo === q.kobo
-                ? 'bg-[#002D62] text-white dark:bg-[#D4AF37] dark:text-slate-900 shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                ? "bg-[#002D62] text-white dark:bg-[#D4AF37] dark:text-slate-900 shadow-xs"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
             }`}
           >
             {q.label}
@@ -127,19 +143,32 @@ export function StepAmount({
 
       {/* Validation Warnings */}
       {isExceedingBalance && (
-        <div className="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-xs text-red-800 dark:bg-red-950/40 dark:text-red-300 border border-red-200/80 dark:border-red-900/40" role="alert">
+        <div
+          className="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-xs text-red-800 dark:bg-red-950/40 dark:text-red-300 border border-red-200/80 dark:border-red-900/40"
+          role="alert"
+        >
           <AlertCircle className="h-4 w-4 shrink-0 text-red-600" />
           <span>
-            Insufficient wallet balance. Total required including ₦10.75 NIP fee is{' '}
-            <strong className="font-mono">{formatKoboToNaira(totalDebitKobo)}</strong>.
+            Insufficient wallet balance. Total required including ₦10.75 NIP fee
+            is{" "}
+            <strong className="font-mono">
+              {formatKoboToNaira(totalDebitKobo)}
+            </strong>
+            .
           </span>
         </div>
       )}
 
       {isExceedingDailyLimit && (
-        <div className="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-xs text-red-800 dark:bg-red-950/40 dark:text-red-300 border border-red-200/80 dark:border-red-900/40" role="alert">
+        <div
+          className="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-xs text-red-800 dark:bg-red-950/40 dark:text-red-300 border border-red-200/80 dark:border-red-900/40"
+          role="alert"
+        >
           <AlertCircle className="h-4 w-4 shrink-0 text-red-600" />
-          <span>Transfer amount exceeds KYC Tier 3 single transaction limit of ₦5,000,000.00.</span>
+          <span>
+            Transfer amount exceeds KYC Tier 3 single transaction limit of
+            ₦5,000,000.00.
+          </span>
         </div>
       )}
 

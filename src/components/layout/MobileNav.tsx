@@ -1,9 +1,9 @@
-import { LayoutDashboard, Receipt, Send, Sliders } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { LayoutDashboard, Receipt, Send, Sliders } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface MobileNavProps {
-  activeTab: 'dashboard' | 'transactions';
-  onSelectTab: (tab: 'dashboard' | 'transactions') => void;
+  activeTab: "dashboard" | "transactions";
+  onSelectTab: (tab: "dashboard" | "transactions") => void;
   onOpenSendMoney: () => void;
   onToggleDevControls: () => void;
 }
@@ -20,18 +20,17 @@ export function MobileNav({
       aria-label="Mobile Bottom Navigation"
     >
       <div className="grid grid-cols-4 items-center justify-around">
-        
         {/* Dashboard Tab */}
         <button
           type="button"
-          onClick={() => onSelectTab('dashboard')}
+          onClick={() => onSelectTab("dashboard")}
           className={cn(
-            'flex flex-col items-center justify-center py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer min-h-[44px]',
-            activeTab === 'dashboard'
-              ? 'text-[#002D62] dark:text-[#D4AF37]'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+            "flex flex-col items-center justify-center py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer min-h-11",
+            activeTab === "dashboard"
+              ? "text-[#002D62] dark:text-[#D4AF37]"
+              : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200",
           )}
-          aria-current={activeTab === 'dashboard' ? 'page' : undefined}
+          aria-current={activeTab === "dashboard" ? "page" : undefined}
         >
           <LayoutDashboard className="h-5 w-5 mb-0.5" />
           <span>Dashboard</span>
@@ -40,14 +39,14 @@ export function MobileNav({
         {/* Transactions Tab */}
         <button
           type="button"
-          onClick={() => onSelectTab('transactions')}
+          onClick={() => onSelectTab("transactions")}
           className={cn(
-            'flex flex-col items-center justify-center py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer min-h-[44px]',
-            activeTab === 'transactions'
-              ? 'text-[#002D62] dark:text-[#D4AF37]'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+            "flex flex-col items-center justify-center py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer min-h-11",
+            activeTab === "transactions"
+              ? "text-[#002D62] dark:text-[#D4AF37]"
+              : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200",
           )}
-          aria-current={activeTab === 'transactions' ? 'page' : undefined}
+          aria-current={activeTab === "transactions" ? "page" : undefined}
         >
           <Receipt className="h-5 w-5 mb-0.5" />
           <span>Ledger</span>
@@ -57,24 +56,25 @@ export function MobileNav({
         <button
           type="button"
           onClick={onOpenSendMoney}
-          className="flex flex-col items-center justify-center py-1.5 text-xs font-medium rounded-lg text-slate-900 transition-colors cursor-pointer min-h-[44px]"
+          className="flex flex-col items-center justify-center py-1.5 text-xs font-medium rounded-lg text-slate-900 transition-colors cursor-pointer min-h-11"
         >
           <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#D4AF37] text-slate-950 shadow-sm mb-0.5">
             <Send className="h-3.5 w-3.5" />
           </div>
-          <span className="font-semibold text-slate-800 dark:text-amber-400">Transfer</span>
+          <span className="font-semibold text-slate-800 dark:text-amber-400">
+            Transfer
+          </span>
         </button>
 
         {/* Simulation / Dev Controls */}
         <button
           type="button"
           onClick={onToggleDevControls}
-          className="flex flex-col items-center justify-center py-1.5 text-xs font-medium rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer min-h-[44px]"
+          className="flex flex-col items-center justify-center py-1.5 text-xs font-medium rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer min-h-11"
         >
           <Sliders className="h-5 w-5 mb-0.5" />
           <span>Dev MSW</span>
         </button>
-
       </div>
     </nav>
   );

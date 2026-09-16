@@ -72,7 +72,6 @@ export function App() {
             isFetching={isFetching}
             onRefresh={() => refetch()}
             onOpenSendMoney={() => setIsSendMoneyOpen(true)}
-            onOpenReceiveQR={() => setIsQRModalOpen(true)}
             onDownloadStatement={handleDownloadStatement}
           />
         </section>

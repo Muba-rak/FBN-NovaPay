@@ -112,7 +112,7 @@ export function StepRecipient({
                   {ben.name.charAt(0)}
                 </div>
                 <div>
-                  <div className="font-semibold text-slate-900 dark:text-white truncate max-w-[110px]">
+                  <div className="font-semibold text-slate-900 dark:text-white truncate max-w-27.5">
                     {ben.name.split(" ")[0]}
                   </div>
                   <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">

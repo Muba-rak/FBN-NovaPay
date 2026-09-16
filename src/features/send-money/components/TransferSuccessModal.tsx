@@ -1,8 +1,8 @@
-import { SendMoneyResponse } from '../types';
-import { formatKoboToNaira } from '@/lib/format-money';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/toast';
-import { CheckCircle2, Download, Share2, ShieldCheck } from 'lucide-react';
+import { SendMoneyResponse } from "../types";
+import { formatKoboToNaira } from "@/lib/format-money";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
+import { CheckCircle2, Download, Share2, ShieldCheck } from "lucide-react";
 
 interface TransferSuccessModalProps {
   response: SendMoneyResponse;
@@ -19,23 +19,25 @@ export function TransferSuccessModal({
 
   const handleDownloadReceipt = () => {
     toast({
-      type: 'success',
-      title: 'Downloading Transfer Receipt',
+      type: "success",
+      title: "Downloading Transfer Receipt",
       description: `Official PDF receipt for ${response.reference} downloaded.`,
     });
   };
 
   const handleShare = () => {
     if (navigator.share) {
-      navigator.share({
-        title: `FirstBank Transfer - ${response.reference}`,
-        text: `Sent ${formatKoboToNaira(response.amountKobo)} to ${response.recipientName}. Ref: ${response.reference}`,
-      }).catch(() => {});
+      navigator
+        .share({
+          title: `FirstBank Transfer - ${response.reference}`,
+          text: `Sent ${formatKoboToNaira(response.amountKobo)} to ${response.recipientName}. Ref: ${response.reference}`,
+        })
+        .catch(() => {});
     } else {
       navigator.clipboard.writeText(response.reference);
       toast({
-        type: 'success',
-        title: 'Reference Copied',
+        type: "success",
+        title: "Reference Copied",
         description: `${response.reference} copied to clipboard.`,
       });
     }
@@ -63,28 +65,36 @@ export function TransferSuccessModal({
       {/* Transaction Details Box */}
       <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 text-xs dark:border-slate-800 dark:bg-slate-900/50 space-y-2.5 text-left">
         <div className="flex justify-between items-center">
-          <span className="text-slate-500 dark:text-slate-400">Destination</span>
+          <span className="text-slate-500 dark:text-slate-400">
+            Destination
+          </span>
           <span className="font-semibold text-slate-900 dark:text-white">
             {response.recipientBankName} ({response.recipientAccount})
           </span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-slate-500 dark:text-slate-400">Transaction Ref</span>
+          <span className="text-slate-500 dark:text-slate-400">
+            Transaction Ref
+          </span>
           <span className="font-mono font-bold text-slate-900 dark:text-white">
             {response.reference}
           </span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-slate-500 dark:text-slate-400">NIBSS Session ID</span>
-          <span className="font-mono text-slate-600 dark:text-slate-400 text-[11px] truncate max-w-[170px]">
+          <span className="text-slate-500 dark:text-slate-400">
+            NIBSS Session ID
+          </span>
+          <span className="font-mono text-slate-600 dark:text-slate-400 text-[11px] truncate max-w-42.5">
             {response.nibssSessionId}
           </span>
         </div>
 
         <div className="flex justify-between items-center pt-2 border-t border-slate-200 dark:border-slate-800">
-          <span className="text-slate-500 dark:text-slate-400">New Available Balance</span>
+          <span className="text-slate-500 dark:text-slate-400">
+            New Available Balance
+          </span>
           <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
             {formatKoboToNaira(response.newAvailableBalanceKobo)}
           </span>

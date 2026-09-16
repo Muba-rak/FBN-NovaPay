@@ -128,7 +128,7 @@ export function StepPin({
       </div>
 
       {/* Numeric Keypad for Mobile / Mouse accessibility */}
-      <div className="grid grid-cols-3 gap-2 max-w-[280px] mx-auto pt-1">
+      <div className="grid grid-cols-3 gap-2 max-w-70 mx-auto pt-1">
         {keypad.map((k, i) => {
           if (k === "") {
             return <div key={i} />;
