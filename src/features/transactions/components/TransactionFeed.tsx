@@ -1,0 +1,216 @@
+import React, { useState } from 'react';
+import { useTransactions } from '../hooks/useTransactions';
+import { TransactionFilters } from './TransactionFilters';
+import { TransactionList } from './TransactionList';
+import { TransactionReceiptModal } from './TransactionReceiptModal';
+import { Transaction } from '../types';
+import { formatKoboToNaira } from '@/lib/format-money';
+import { LoadingState } from '@/components/feedback/LoadingState';
+import { ErrorState } from '@/components/feedback/ErrorState';
+import { EmptyState } from '@/components/feedback/EmptyState';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/toast';
+import {
+  ArrowDownLeft,
+  ArrowUpRight,
+  Download,
+  History,
+  RefreshCw,
+  SearchX,
+  SlidersHorizontal,
+} from 'lucide-react';
+
+interface TransactionFeedProps {
+  onOpenSendMoney?: () => void;
+}
+
+export function TransactionFeed({ onOpenSendMoney }: TransactionFeedProps) {
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch,
+    isFetching,
+    filters,
+    debouncedSearch,
+    setDateRange,
+    setStatus,
+    setType,
+    setSearch,
+    resetFilters,
+    hasActiveFilters,
+  } = useTransactions();
+
+  const { toast } = useToast();
+  const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
+
+  const transactions = data?.transactions || [];
+  const summary = data?.summary;
+  const filteredCount = data?.filteredCount ?? 0;
+
+  const handleExportCSV = () => {
+    toast({
+      type: 'success',
+      title: 'Exporting Transaction Ledger',
+      description: `Downloading ${filteredCount.toLocaleString()} transactions as CSV.`,
+    });
+  };
+
+  return (
+    <section
+      aria-labelledby="transaction-feed-heading"
+      className="space-y-4 rounded-3xl border border-slate-200/80 bg-white/70 p-4 sm:p-6 shadow-xs backdrop-blur-md dark:border-slate-800 dark:bg-[#001A3A]/40 transition-colors"
+    >
+      {/* Feed Title & Quick Export Actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center space-x-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#002D62] text-[#D4AF37] dark:bg-amber-400/10 dark:text-[#D4AF37]">
+            <History className="h-5 w-5" />
+          </div>
+          <div>
+            <h2
+              id="transaction-feed-heading"
+              className="text-lg font-bold tracking-tight text-slate-900 dark:text-white"
+            >
+              Transaction Ledger
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Live NIBSS NIP & POS Real-Time Settlement Audit Trail
+            </p>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex items-center space-x-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="h-8 gap-1.5 text-xs text-slate-700 dark:text-slate-300"
+            aria-label="Refresh transaction ledger"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? 'animate-spin' : ''}`} />
+            <span className="hidden xs:inline">Sync</span>
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleExportCSV}
+            disabled={transactions.length === 0}
+            className="h-8 gap-1.5 text-xs text-slate-700 dark:text-slate-300"
+            aria-label="Download transactions as CSV"
+          >
+            <Download className="h-3.5 w-3.5" />
+            <span className="hidden xs:inline">Export CSV</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* Filtered Telemetry Summary Bar */}
+      {summary && (
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5">
+          {/* Total Inflow Volume */}
+          <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-900/50">
+            <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+              <span className="text-[11px] font-medium">Inflows ({summary.creditCount})</span>
+              <ArrowDownLeft className="h-3.5 w-3.5 text-emerald-500" />
+            </div>
+            <div className="mt-1 font-mono font-bold text-sm sm:text-base text-emerald-600 dark:text-emerald-400 tracking-tight">
+              {formatKoboToNaira(summary.creditVolumeKobo)}
+            </div>
+          </div>
+
+          {/* Total Outflow Volume */}
+          <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-900/50">
+            <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+              <span className="text-[11px] font-medium">Outflows ({summary.debitCount})</span>
+              <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
+            </div>
+            <div className="mt-1 font-mono font-bold text-sm sm:text-base text-slate-900 dark:text-white tracking-tight">
+              {formatKoboToNaira(summary.debitVolumeKobo)}
+            </div>
+          </div>
+
+          {/* Net Flow Volume (Hidden on small mobile, visible on desktop) */}
+          <div className="col-span-2 lg:col-span-1 rounded-xl border border-slate-200/80 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-900/50">
+            <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+              <span className="text-[11px] font-medium">Net Settlement Flow</span>
+              <SlidersHorizontal className="h-3.5 w-3.5 text-amber-500" />
+            </div>
+            <div
+              className={`mt-1 font-mono font-bold text-sm sm:text-base tracking-tight ${
+                summary.creditVolumeKobo - summary.debitVolumeKobo >= 0
+                  ? 'text-emerald-600 dark:text-emerald-400'
+                  : 'text-red-500 dark:text-red-400'
+              }`}
+            >
+              {formatKoboToNaira(summary.creditVolumeKobo - summary.debitVolumeKobo, {
+                showSign: true,
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Interactive Filters Bar */}
+      <TransactionFilters
+        filters={filters}
+        onSearchChange={setSearch}
+        onDateRangeChange={setDateRange}
+        onStatusChange={setStatus}
+        onTypeChange={setType}
+        onResetFilters={resetFilters}
+        hasActiveFilters={hasActiveFilters}
+        totalFilteredCount={filteredCount}
+      />
+
+      {/* Screen Reader Live Announcement */}
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {!isLoading &&
+          `Showing ${filteredCount} transactions for ${filters.dateRange} date range and ${filters.status} status.`}
+      </div>
+
+      {/* Main Content Area */}
+      {isLoading ? (
+        <LoadingState message="Synchronizing 1,000+ transaction audit trail..." rows={6} />
+      ) : isError ? (
+        <ErrorState
+          title="Could not load transactions"
+          message={error instanceof Error ? error.message : 'Network gateway timeout.'}
+          onRetry={() => refetch()}
+          isRetrying={isFetching}
+        />
+      ) : transactions.length === 0 ? (
+        <EmptyState
+          icon={<SearchX className="h-6 w-6" />}
+          title="No transactions match your search"
+          description={
+            hasActiveFilters
+              ? 'Try changing or clearing your search term, date range, or status filter.'
+              : 'You have not performed any transactions in this account yet.'
+          }
+          actionLabel={hasActiveFilters ? 'Clear All Filters' : onOpenSendMoney ? 'Make a Transfer' : undefined}
+          onAction={hasActiveFilters ? resetFilters : onOpenSendMoney}
+        />
+      ) : (
+        <TransactionList
+          transactions={transactions}
+          onSelectTransaction={(tx) => setSelectedTx(tx)}
+          height={580}
+        />
+      )}
+
+      {/* Transaction Details & Receipt Modal */}
+      <TransactionReceiptModal
+        transaction={selectedTx}
+        isOpen={!!selectedTx}
+        onClose={() => setSelectedTx(null)}
+      />
+    </section>
+  );
+}

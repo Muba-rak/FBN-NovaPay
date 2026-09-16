@@ -1,10 +1,25 @@
 import '@testing-library/jest-dom/vitest';
-import { afterEach, vi } from 'vitest';
+import { beforeAll, afterEach, afterAll, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
+import { server } from '@/mocks/server';
+import { simulationConfig } from '@/mocks/config';
 
-// Automatically cleanup after each test
+beforeAll(() => {
+  // Disable artificial latency in tests for instant assertions
+  simulationConfig.latencyMs = 0;
+  simulationConfig.failureRate = 0;
+  simulationConfig.offline = false;
+  server.listen({ onUnhandledRequest: 'bypass' });
+});
+
+// Automatically cleanup and reset handlers after each test
 afterEach(() => {
   cleanup();
+  server.resetHandlers();
+});
+
+afterAll(() => {
+  server.close();
 });
 
 // Mock ResizeObserver for virtualization / responsive tests

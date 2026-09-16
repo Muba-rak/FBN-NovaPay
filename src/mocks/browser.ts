@@ -9,7 +9,10 @@ export const handlers = [
   ...transferHandlers,
 ];
 
-export const worker = typeof window !== 'undefined' ? setupWorker(...handlers) : null;
+export const worker =
+  typeof window !== 'undefined' && typeof navigator !== 'undefined' && 'serviceWorker' in navigator
+    ? setupWorker(...handlers)
+    : null;
 
 export async function enableMocking() {
   if (typeof window === 'undefined' || !worker) {
