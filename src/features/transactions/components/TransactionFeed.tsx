@@ -29,7 +29,6 @@ export function TransactionFeed({ onOpenSendMoney }: TransactionFeedProps) {
     data,
     isLoading,
     isError,
-    error,
     refetch,
     isFetching,
     filters,

@@ -81,7 +81,7 @@ export function DailySummary({
               className="h-8 gap-1.5 text-xs text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800 bg-white dark:bg-slate-900 hover:bg-amber-50 dark:hover:bg-amber-950/40 shrink-0 cursor-pointer"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${isRetrying ? "animate-spin" : ""}`} />
-              <span>Retry Breakdown</span>
+              <span>{isRetrying ? "Retrying..." : "Retry Breakdown"}</span>
             </Button>
           )}
         </div>

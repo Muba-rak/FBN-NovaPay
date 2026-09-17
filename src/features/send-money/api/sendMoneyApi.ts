@@ -5,21 +5,39 @@ import {
   SendMoneyPayload,
   SendMoneyResponse,
 } from '../types';
+import { NIGERIAN_BANKS_LIST, INITIAL_BENEFICIARIES } from '@/mocks/handlers/transfers';
 
 export async function fetchBanks(): Promise<Bank[]> {
-  const res = await fetch('/api/banks');
-  if (!res.ok) {
-    throw new Error('Failed to fetch financial institutions directory');
+  try {
+    const res = await fetch('/api/banks');
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        return data;
+      }
+    }
+  } catch {
+    // Network or service worker initialization failure
   }
-  return res.json();
+  // Fall back to bundled banks directory if MSW hasn't claimed client or network dropped
+  return NIGERIAN_BANKS_LIST;
 }
 
 export async function fetchBeneficiaries(): Promise<Beneficiary[]> {
-  const res = await fetch('/api/beneficiaries');
-  if (!res.ok) {
-    throw new Error('Failed to fetch recent beneficiaries');
+  try {
+    const res = await fetch('/api/beneficiaries');
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        return data;
+      }
+    }
+  } catch {
+    // Network or service worker initialization failure
   }
-  return res.json();
+  return INITIAL_BENEFICIARIES;
 }
 
 export async function resolveAccountName(
@@ -32,7 +50,8 @@ export async function resolveAccountName(
     body: JSON.stringify({ accountNumber, bankCode }),
   });
 
-  if (!res.ok) {
+  const contentType = res.headers.get('content-type') || '';
+  if (!res.ok || !contentType.includes('application/json')) {
     const errorData = await res.json().catch(() => ({}));
     throw new Error(errorData.message || 'Could not resolve account name on NIBSS network');
   }
@@ -52,7 +71,8 @@ export async function executeSendMoney(
     body: JSON.stringify(payload),
   });
 
-  if (!res.ok) {
+  const contentType = res.headers.get('content-type') || '';
+  if (!res.ok || !contentType.includes('application/json')) {
     const errorData = await res.json().catch(() => ({}));
     const error = new Error(
       errorData.message || 'Transfer failed. NIBSS gateway timeout.'

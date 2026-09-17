@@ -52,7 +52,8 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
   // Parse JSON response if present
   let data: unknown;
   const contentType = response.headers.get('content-type');
-  if (contentType && contentType.includes('application/json')) {
+  const isJson = contentType && contentType.includes('application/json');
+  if (isJson) {
     try {
       data = await response.json();
     } catch {
@@ -62,10 +63,12 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
     data = await response.text();
   }
 
-  if (!response.ok) {
+  if (!response.ok || !isJson) {
     const errorMsg =
       (typeof data === 'object' && data !== null && 'message' in data && typeof (data as { message: unknown }).message === 'string')
         ? (data as { message: string }).message
+        : !isJson
+        ? 'Service initialization in progress. Please retry.'
         : response.statusText || 'An unexpected error occurred';
     
     const errorCode = (typeof data === 'object' && data !== null && 'code' in data && typeof (data as { code: unknown }).code === 'string')

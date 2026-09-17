@@ -6,7 +6,6 @@ import { useBalance } from "@/features/dashboard/hooks/useBalance";
 import { TransactionFeed } from "@/features/transactions";
 import { SendMoneyModal } from "@/features/send-money";
 import { useToast } from "@/components/ui/toast";
-import { ErrorState } from "@/components/feedback/ErrorState";
 
 export function App() {
   const { balance, isLoading, isError, error, refetch, isFetching } =

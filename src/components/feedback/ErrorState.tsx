@@ -42,11 +42,11 @@ export function ErrorState({
           variant="destructive"
           size="sm"
           onClick={onRetry}
-          isLoading={isRetrying}
-          className="gap-2"
+          disabled={isRetrying}
+          className="gap-2 cursor-pointer"
         >
-          <RefreshCw className="h-3.5 w-3.5" />
-          {retryLabel}
+          <RefreshCw className={cn("h-3.5 w-3.5", isRetrying && "animate-spin")} />
+          <span>{isRetrying ? "Retrying..." : retryLabel}</span>
         </Button>
       )}
     </div>

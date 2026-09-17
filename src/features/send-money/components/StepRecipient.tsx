@@ -45,6 +45,7 @@ export function StepRecipient({
   const {
     data: banks = [],
     isLoading: isLoadingBanks,
+    isFetching: isFetchingBanks,
     isError: isErrorBanks,
     refetch: refetchBanks,
   } = useBanks();
@@ -175,9 +176,13 @@ export function StepRecipient({
                   variant="ghost"
                   size="sm"
                   onClick={() => refetchBanks()}
-                  className="h-6 px-2 text-[11px] font-semibold text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/50"
+                  disabled={isFetchingBanks}
+                  className="h-6 px-2 text-[11px] font-semibold text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/50 gap-1.5 cursor-pointer"
                 >
-                  Retry
+                  <RefreshCw
+                    className={`h-3 w-3 ${isFetchingBanks ? "animate-spin" : ""}`}
+                  />
+                  <span>{isFetchingBanks ? "Retrying..." : "Retry"}</span>
                 </Button>
               </div>
             ) : (
@@ -256,9 +261,13 @@ export function StepRecipient({
                     variant="outline"
                     size="sm"
                     onClick={() => refetchBanks()}
-                    className="h-7 text-xs border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/40"
+                    disabled={isFetchingBanks}
+                    className="h-7 text-xs border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/40 gap-1.5 cursor-pointer"
                   >
-                    Retry Loading Banks
+                    <RefreshCw
+                      className={`h-3 w-3 ${isFetchingBanks ? "animate-spin" : ""}`}
+                    />
+                    <span>{isFetchingBanks ? "Retrying..." : "Retry Loading Banks"}</span>
                   </Button>
                 </div>
               ) : filteredBanks.length === 0 ? (
@@ -274,13 +283,13 @@ export function StepRecipient({
                     variant="ghost"
                     size="sm"
                     onClick={() => setBankSearch("")}
-                    className="h-6 text-xs text-amber-600 dark:text-amber-400 hover:text-amber-700"
+                    className="h-7 text-xs text-[#002D62] dark:text-[#D4AF37] hover:underline"
                   >
-                    Clear search
+                    Clear search filter
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-0.5">
+                <div className="max-h-60 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
                   {filteredBanks.map((bank) => {
                     const isSelected = selectedBankCode === bank.code;
                     return (
@@ -292,9 +301,9 @@ export function StepRecipient({
                           setIsBankPickerOpen(false);
                           setBankSearch("");
                         }}
-                        className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-xs transition-colors cursor-pointer ${
+                        className={`w-full flex items-center justify-between px-4 py-2.5 text-xs text-left transition-colors cursor-pointer ${
                           isSelected
-                            ? "bg-amber-50 dark:bg-amber-950/50 text-amber-900 dark:text-amber-300 font-semibold"
+                            ? "bg-blue-50 dark:bg-amber-950/40 text-[#002D62] dark:text-[#D4AF37] font-semibold"
                             : "text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-950 dark:hover:text-slate-50"
                         }`}
                       >
@@ -311,22 +320,19 @@ export function StepRecipient({
         ) : (
           <button
             type="button"
-            id="bank-selector"
-            onClick={() => setIsBankPickerOpen(true)}
-            className={`flex w-full items-center justify-between rounded-xl border p-3 text-left transition-all cursor-pointer ${
-              selectedBankName
-                ? "border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100/60 dark:hover:bg-slate-800/60 shadow-2xs"
-                : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 shadow-2xs"
-            }`}
+            onClick={() => {
+              if (isErrorBanks) {
+                refetchBanks();
+              } else {
+                setIsBankPickerOpen(!isBankPickerOpen);
+              }
+            }}
+            className="w-full flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-left transition-all hover:border-slate-300 dark:hover:border-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002D62] cursor-pointer"
+            aria-expanded={isBankPickerOpen}
+            aria-haspopup="listbox"
           >
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div
-                className={`flex h-8 w-8 items-center justify-center rounded-lg border shrink-0 ${
-                  selectedBankName
-                    ? "bg-blue-50 dark:bg-blue-950/50 text-[#002D62] dark:text-blue-300 border-blue-200/60 dark:border-blue-900/60"
-                    : "bg-slate-50 dark:bg-slate-800 text-slate-400 border-slate-200/80 dark:border-slate-700"
-                }`}
-              >
+            <div className="flex items-center space-x-3 min-w-0">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                 <Building2 className="h-4 w-4" />
               </div>
               <div className="min-w-0">
@@ -338,7 +344,7 @@ export function StepRecipient({
                   </>
                 ) : (
                   <span className="text-sm text-slate-500 dark:text-slate-400 font-normal">
-                    {isLoadingBanks
+                    {isLoadingBanks || isFetchingBanks
                       ? "Loading institutions..."
                       : isErrorBanks
                         ? "Unable to load banks (tap to retry)"
@@ -461,12 +467,12 @@ export function StepRecipient({
                 size="sm"
                 onClick={handleResolveAccount}
                 disabled={resolveMutation.isPending}
-                className="h-7 text-xs border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-900/50 gap-1.5"
+                className="h-7 text-xs border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-900/50 gap-1.5 cursor-pointer"
               >
                 <RefreshCw
                   className={`h-3 w-3 ${resolveMutation.isPending ? "animate-spin" : ""}`}
                 />
-                Retry Verification
+                <span>{resolveMutation.isPending ? "Retrying..." : "Retry Verification"}</span>
               </Button>
             </div>
           </div>

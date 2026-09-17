@@ -46,7 +46,8 @@ export function useTransactions() {
     ],
     queryFn: async () => {
       const res = await fetch(`/api/transactions?${queryParams}`);
-      if (!res.ok) {
+      const contentType = res.headers.get('content-type') || '';
+      if (!res.ok || !contentType.includes('application/json')) {
         const errorData = await res.json().catch(() => ({}));
         throw new Error(errorData.message || 'Failed to fetch transaction records');
       }
