@@ -187,19 +187,24 @@ export function TransactionFeed({ onOpenSendMoney }: TransactionFeedProps) {
         <LoadingState message="Synchronizing 1,000+ transaction audit trail..." rows={6} />
       ) : isError ? (
         <ErrorState
-          title="Could not load transactions"
-          message={error instanceof Error ? error.message : 'Network gateway timeout.'}
+          title="Unable to load transaction history"
+          message="We couldn't synchronize your transaction ledger. This is usually temporary — please check your connection or try again."
           onRetry={() => refetch()}
           isRetrying={isFetching}
+          retryLabel="Retry Loading Transactions"
         />
       ) : transactions.length === 0 ? (
         <EmptyState
           icon={<SearchX className="h-6 w-6" />}
-          title="No transactions match your search"
+          title={
+            hasActiveFilters
+              ? 'No transactions found matching your criteria'
+              : 'Your transaction ledger is ready'
+          }
           description={
             hasActiveFilters
-              ? 'Try changing or clearing your search term, date range, or status filter.'
-              : 'You have not performed any transactions in this account yet.'
+              ? 'Try expanding your date range, clearing your search keywords, or resetting your status filters.'
+              : "You haven't made or received any payments yet. Tap below to initiate your first transfer."
           }
           actionLabel={hasActiveFilters ? 'Clear All Filters' : onOpenSendMoney ? 'Make a Transfer' : undefined}
           onAction={hasActiveFilters ? resetFilters : onOpenSendMoney}

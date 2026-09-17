@@ -14,11 +14,15 @@ import {
   RefreshCw,
   Building2,
   Sparkles,
+  AlertTriangle,
+  ShieldCheck,
 } from "lucide-react";
 
 interface BalanceCardProps {
-  balance?: WalletBalance;
+  balance?: WalletBalance | null;
   isLoading?: boolean;
+  isError?: boolean;
+  error?: Error | null;
   isFetching?: boolean;
   onRefresh?: () => void;
   onOpenSendMoney: () => void;
@@ -28,6 +32,8 @@ interface BalanceCardProps {
 export function BalanceCard({
   balance,
   isLoading,
+  isError,
+  error: _error,
   isFetching,
   onRefresh,
   onOpenSendMoney,
@@ -67,6 +73,73 @@ export function BalanceCard({
           <div className="h-10 bg-white/20 rounded-xl" />
           <div className="h-10 bg-white/20 rounded-xl" />
           <div className="h-10 bg-white/20 rounded-xl" />
+        </div>
+      </div>
+    );
+  }
+
+  // In-Card Error State (when balance failed to load and no cached balance is available)
+  if (isError && !balance) {
+    return (
+      <div
+        role="alert"
+        aria-live="assertive"
+        className="relative w-full overflow-hidden rounded-2xl bg-linear-to-br from-[#002D62] via-[#001D40] to-[#040D1E] p-6 sm:p-8 text-white shadow-xl border border-red-500/30 min-h-[260px] flex flex-col justify-between transition-all"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center space-x-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-500/20 text-red-300 ring-1 ring-red-400/30">
+              <AlertTriangle className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-white tracking-tight">
+                Unable to update your wallet balance
+              </h3>
+              <p className="text-xs text-slate-300">
+                Connection to core banking rails interrupted
+              </p>
+            </div>
+          </div>
+          <Badge
+            variant="outline"
+            className="border-red-400/40 bg-red-950/60 text-red-300 text-[10px] uppercase font-bold"
+          >
+            Offline
+          </Badge>
+        </div>
+
+        <div className="my-4 rounded-xl bg-white/5 border border-white/10 p-4 space-y-2">
+          <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
+            We're having trouble connecting to the FirstBank core banking network.
+            Your funds are completely safe. This is usually temporary.
+          </p>
+          <div className="flex items-center gap-1.5 text-[11px] text-amber-300 font-medium">
+            <ShieldCheck className="h-3.5 w-3.5 text-amber-400" />
+            <span>NDIC Insured • Central Bank of Nigeria (CBN) Licensed</span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 pt-1">
+          <Button
+            type="button"
+            onClick={onRefresh}
+            disabled={isFetching}
+            variant="gold"
+            className="gap-2 text-slate-950 font-bold"
+          >
+            <RefreshCw
+              className={`h-4 w-4 ${isFetching ? "animate-spin text-slate-950" : ""}`}
+            />
+            <span>{isFetching ? "Reconnecting..." : "Retry Balance Sync"}</span>
+          </Button>
+          <Button
+            type="button"
+            onClick={onOpenSendMoney}
+            variant="outline"
+            className="border-white/20 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+          >
+            Make Transfer
+          </Button>
         </div>
       </div>
     );
@@ -129,6 +202,15 @@ export function BalanceCard({
 
         {/* Live Refresh Button */}
         <div className="flex items-center space-x-2">
+          {isError && (
+            <Badge
+              variant="outline"
+              className="border-red-400/50 bg-red-950/60 text-red-200 text-[10px] flex items-center gap-1 px-2 py-0.5"
+            >
+              <AlertTriangle className="h-3 w-3 text-red-400" />
+              <span>Out of sync</span>
+            </Badge>
+          )}
           <button
             type="button"
             onClick={onRefresh}

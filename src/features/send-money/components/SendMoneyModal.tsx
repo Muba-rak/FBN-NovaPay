@@ -107,15 +107,13 @@ export function SendMoneyModal({ isOpen, onClose }: SendMoneyModalProps) {
         });
       },
       onError: (err) => {
-        setErrorMessage(
-          err.message || "Transfer failed. Your balance was not debited.",
-        );
+        const errorDetail = err.message || "Interbank network timeout.";
+        const friendlyMessage = `Transfer Unsuccessful — Your Funds are Safe. ${errorDetail} Your wallet balance has been safely restored and no money was deducted.`;
+        setErrorMessage(friendlyMessage);
         toast({
           type: "error",
-          title: "Transfer Rejected",
-          description:
-            err.message ||
-            "NIBSS network timeout. Balance was safely restored.",
+          title: "Transfer Unsuccessful — Funds Safe",
+          description: friendlyMessage,
         });
       },
     });

@@ -1,6 +1,7 @@
 import { WalletBalance } from "../types";
 import { formatKoboToNaira } from "@/lib/format-money";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -8,14 +9,27 @@ import {
   CreditCard,
   Scale,
   TrendingUp,
+  AlertTriangle,
+  RefreshCw,
 } from "lucide-react";
 
 interface DailySummaryProps {
-  balance?: WalletBalance;
+  balance?: WalletBalance | null;
   isLoading?: boolean;
+  isError?: boolean;
+  error?: Error | null;
+  onRetry?: () => void;
+  isRetrying?: boolean;
 }
 
-export function DailySummary({ balance, isLoading }: DailySummaryProps) {
+export function DailySummary({
+  balance,
+  isLoading,
+  isError,
+  error: _error,
+  onRetry,
+  isRetrying,
+}: DailySummaryProps) {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-pulse">
@@ -31,6 +45,46 @@ export function DailySummary({ balance, isLoading }: DailySummaryProps) {
             <div className="h-6 w-32 bg-slate-100 dark:bg-slate-800 rounded" />
           </div>
         ))}
+      </div>
+    );
+  }
+
+  // Explicit Error State for Daily Telemetry
+  if (isError && !balance) {
+    return (
+      <div
+        role="alert"
+        aria-live="assertive"
+        className="rounded-2xl border border-amber-200/80 dark:border-amber-900/60 bg-amber-50/70 dark:bg-amber-950/30 p-5 text-left transition-all"
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center space-x-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400">
+              <AlertTriangle className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50">
+                Settlement telemetry temporarily unavailable
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400">
+                Could not load today's inflow and outflow breakdown. Click retry to refresh your figures.
+              </p>
+            </div>
+          </div>
+          {onRetry && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onRetry}
+              disabled={isRetrying}
+              className="h-8 gap-1.5 text-xs text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800 bg-white dark:bg-slate-900 hover:bg-amber-50 dark:hover:bg-amber-950/40 shrink-0 cursor-pointer"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 ${isRetrying ? "animate-spin" : ""}`} />
+              <span>Retry Breakdown</span>
+            </Button>
+          )}
+        </div>
       </div>
     );
   }

@@ -34,20 +34,6 @@ export function App() {
       onOpenSendMoney={() => setIsSendMoneyOpen(true)}
     >
       <div className="space-y-6">
-        {/* Error Boundary for Balance */}
-        {isError && (
-          <ErrorState
-            title="Failed to load merchant wallet"
-            message={
-              error instanceof Error
-                ? error.message
-                : "Could not synchronize wallet balance."
-            }
-            onRetry={() => refetch()}
-            isRetrying={isFetching}
-          />
-        )}
-
         {/* Hero Section: Balance Card & Quick Actions */}
         <section aria-labelledby="wallet-balance-heading">
           <h2 id="wallet-balance-heading" className="sr-only">
@@ -56,6 +42,8 @@ export function App() {
           <BalanceCard
             balance={balance}
             isLoading={isLoading}
+            isError={isError}
+            error={error}
             isFetching={isFetching}
             onRefresh={() => refetch()}
             onOpenSendMoney={() => setIsSendMoneyOpen(true)}
@@ -68,7 +56,14 @@ export function App() {
           <h2 id="daily-summary-heading" className="sr-only">
             Today's Transaction Volume and Settlement Breakdown
           </h2>
-          <DailySummary balance={balance} isLoading={isLoading} />
+          <DailySummary
+            balance={balance}
+            isLoading={isLoading}
+            isError={isError}
+            error={error}
+            onRetry={() => refetch()}
+            isRetrying={isFetching}
+          />
         </section>
 
         {/* Transaction Ledger Feed */}

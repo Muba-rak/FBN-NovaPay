@@ -18,6 +18,7 @@ import {
   Search,
   ChevronDown,
   Hash,
+  RefreshCw,
 } from "lucide-react";
 
 interface StepRecipientProps {
@@ -41,15 +42,19 @@ export function StepRecipient({
   onResolveName,
   onNext,
 }: StepRecipientProps) {
-  const { data: banks = [], isLoading: isLoadingBanks } = useBanks();
+  const {
+    data: banks = [],
+    isLoading: isLoadingBanks,
+    isError: isErrorBanks,
+    refetch: refetchBanks,
+  } = useBanks();
   const { data: beneficiaries = [] } = useBeneficiaries();
   const resolveMutation = useResolveAccount();
 
   const [bankSearch, setBankSearch] = useState("");
   const [isBankPickerOpen, setIsBankPickerOpen] = useState(false);
 
-  // Auto-resolve account name when bank is selected and account number reaches 10 digits
-  useEffect(() => {
+  const handleResolveAccount = () => {
     if (selectedBankCode && accountNumber.length === 10) {
       resolveMutation.mutate(
         { accountNumber, bankCode: selectedBankCode },
@@ -64,6 +69,13 @@ export function StepRecipient({
           },
         },
       );
+    }
+  };
+
+  // Auto-resolve account name when bank is selected and account number reaches 10 digits
+  useEffect(() => {
+    if (selectedBankCode && accountNumber.length === 10) {
+      handleResolveAccount();
     } else if (accountNumber.length < 10) {
       onResolveName("");
     }
@@ -153,29 +165,44 @@ export function StepRecipient({
         {/* Popular Quick Bank Chips */}
         {!isBankPickerOpen && (
           <div className="flex flex-wrap gap-1.5 mb-2.5">
-            {popularBanks.map((bank) => {
-              const isSelected = selectedBankCode === bank.code;
-              return (
-                <button
-                  key={bank.code}
+            {isErrorBanks ? (
+              <div className="w-full flex items-center justify-between rounded-xl bg-red-50 dark:bg-red-950/40 p-2.5 text-xs text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-900/60">
+                <span className="text-[11px]">Unable to load commercial banks directory.</span>
+                <Button
                   type="button"
-                  onClick={() => {
-                    onSelectBank(bank);
-                    setIsBankPickerOpen(false);
-                  }}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all cursor-pointer ${
-                    isSelected
-                      ? "bg-[#002D62] dark:bg-[#D4AF37] text-white dark:text-slate-950 shadow-2xs font-semibold"
-                      : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-950 dark:hover:text-slate-50"
-                  }`}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => refetchBanks()}
+                  className="h-6 px-2 text-[11px] font-semibold text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/50"
                 >
-                  {bank.name
-                    .replace(" of Nigeria", "")
-                    .replace(" (GTBank)", "")
-                    .replace(" Microfinance Bank", "")}
-                </button>
-              );
-            })}
+                  Retry
+                </Button>
+              </div>
+            ) : (
+              popularBanks.map((bank) => {
+                const isSelected = selectedBankCode === bank.code;
+                return (
+                  <button
+                    key={bank.code}
+                    type="button"
+                    onClick={() => {
+                      onSelectBank(bank);
+                      setIsBankPickerOpen(false);
+                    }}
+                    className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all cursor-pointer ${
+                      isSelected
+                        ? "bg-[#002D62] dark:bg-[#D4AF37] text-white dark:text-slate-950 shadow-2xs font-semibold"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-950 dark:hover:text-slate-50"
+                    }`}
+                  >
+                    {bank.name
+                      .replace(" of Nigeria", "")
+                      .replace(" (GTBank)", "")
+                      .replace(" Microfinance Bank", "")}
+                  </button>
+                );
+              })
+            )}
           </div>
         )}
 
@@ -212,9 +239,42 @@ export function StepRecipient({
                   <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
                   Loading banks...
                 </div>
+              ) : isErrorBanks ? (
+                <div role="alert" className="p-4 text-center text-xs space-y-2">
+                  <div className="flex items-center justify-center gap-1.5 text-red-600 dark:text-red-400 font-semibold">
+                    <AlertCircle className="h-4 w-4" />
+                    <span>Unable to load commercial banks</span>
+                  </div>
+                  <p className="text-slate-500 dark:text-slate-400 text-[11px] leading-relaxed">
+                    Please check your connection and try loading the institutions again.
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => refetchBanks()}
+                    className="h-7 text-xs border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/40"
+                  >
+                    Retry Loading Banks
+                  </Button>
+                </div>
               ) : filteredBanks.length === 0 ? (
-                <div className="p-4 text-center text-xs text-slate-500 dark:text-slate-400">
-                  No banks found matching "{bankSearch}"
+                <div className="p-4 text-center text-xs space-y-2">
+                  <div className="text-slate-600 dark:text-slate-300 font-medium">
+                    No banks found matching "{bankSearch}"
+                  </div>
+                  <p className="text-slate-400 dark:text-slate-500 text-[11px]">
+                    Verify the institution name or 3-digit NIP code.
+                  </p>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setBankSearch("")}
+                    className="h-6 text-xs text-amber-600 dark:text-amber-400 hover:text-amber-700"
+                  >
+                    Clear search
+                  </Button>
                 </div>
               ) : (
                 <div className="space-y-0.5">
@@ -281,6 +341,8 @@ export function StepRecipient({
                   <span className="text-sm text-slate-500 dark:text-slate-400 font-normal">
                     {isLoadingBanks
                       ? "Loading institutions..."
+                      : isErrorBanks
+                      ? "Unable to load banks (tap to retry)"
                       : "Select or search bank..."}
                   </span>
                 )}
@@ -370,9 +432,40 @@ export function StepRecipient({
         )}
 
         {resolveMutation.isError && (
-          <div className="flex items-center gap-2 rounded-xl bg-red-50 dark:bg-red-950/50 p-3 text-xs text-red-800 dark:text-red-300 border border-red-200/80 dark:border-red-900/60">
-            <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400 shrink-0" />
-            <span>{resolveMutation.error.message}</span>
+          <div
+            role="alert"
+            aria-live="assertive"
+            className="flex flex-col gap-2 rounded-xl bg-red-50 dark:bg-red-950/50 p-3 text-xs text-red-800 dark:text-red-300 border border-red-200/80 dark:border-red-900/60"
+          >
+            <div className="flex items-start gap-2">
+              <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-red-900 dark:text-red-200 mb-0.5">
+                  Account verification delayed or not found
+                </div>
+                <p className="text-[11px] text-red-700 dark:text-red-300 leading-relaxed">
+                  We couldn't verify this account name with the destination bank. Please confirm the 10-digit NUBAN number, or try again in a moment.
+                </p>
+                {resolveMutation.error?.message && (
+                  <p className="mt-1 font-mono text-[10px] text-red-600 dark:text-red-400 opacity-80 truncate">
+                    Rail response: {resolveMutation.error.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleResolveAccount}
+                disabled={resolveMutation.isPending}
+                className="h-7 text-xs border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-900/50 gap-1.5"
+              >
+                <RefreshCw className={`h-3 w-3 ${resolveMutation.isPending ? 'animate-spin' : ''}`} />
+                Retry Verification
+              </Button>
+            </div>
           </div>
         )}
       </div>

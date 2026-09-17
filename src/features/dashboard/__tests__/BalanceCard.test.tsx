@@ -64,6 +64,42 @@ describe("BalanceCard Component", () => {
     fireEvent.click(sendBtn);
     expect(handleSend).toHaveBeenCalledTimes(1);
   });
+
+  it("renders in-card error state when balance is missing and isError is true", () => {
+    const handleRefresh = vi.fn();
+    renderWithToast(
+      <BalanceCard
+        balance={null}
+        isError={true}
+        onRefresh={handleRefresh}
+        onOpenSendMoney={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByText("Unable to update your wallet balance"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/We're having trouble connecting to the FirstBank core banking network/),
+    ).toBeInTheDocument();
+
+    const retryBtn = screen.getByRole("button", { name: /Retry Balance Sync/i });
+    fireEvent.click(retryBtn);
+    expect(handleRefresh).toHaveBeenCalledTimes(1);
+  });
+
+  it("displays Out of sync badge when cached balance exists during an error", () => {
+    renderWithToast(
+      <BalanceCard
+        balance={initialMerchantBalance}
+        isError={true}
+        onOpenSendMoney={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Out of sync")).toBeInTheDocument();
+    expect(screen.getByText("₦3,845,250.00")).toBeInTheDocument();
+  });
 });
 
 describe("DailySummary Component", () => {
@@ -78,5 +114,27 @@ describe("DailySummary Component", () => {
     expect(screen.getByText("+₦717,500.00")).toBeInTheDocument();
     // Pending settlement: 7475000 kobo = ₦74,750.00
     expect(screen.getByText("₦74,750.00")).toBeInTheDocument();
+  });
+
+  it("renders error state when isError is true and triggers onRetry", () => {
+    const handleRetry = vi.fn();
+    renderWithToast(
+      <DailySummary
+        balance={null}
+        isError={true}
+        onRetry={handleRetry}
+      />
+    );
+
+    expect(
+      screen.getByText("Settlement telemetry temporarily unavailable"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Could not load today's inflow and outflow breakdown/),
+    ).toBeInTheDocument();
+
+    const retryBtn = screen.getByRole("button", { name: /Retry Breakdown/i });
+    fireEvent.click(retryBtn);
+    expect(handleRetry).toHaveBeenCalledTimes(1);
   });
 });

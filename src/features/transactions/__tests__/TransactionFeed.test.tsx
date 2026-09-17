@@ -8,6 +8,8 @@ import { TransactionRow } from '../components/TransactionRow';
 import { TransactionFilters } from '../components/TransactionFilters';
 import { TransactionReceiptModal } from '../components/TransactionReceiptModal';
 import { Transaction } from '../types';
+import { server } from '@/mocks/server';
+import { http, HttpResponse } from 'msw';
 
 const mockTransaction: Transaction = {
   id: 'tx_test_001',
@@ -191,5 +193,65 @@ describe('TransactionFeed Integration', () => {
       },
       { timeout: 3000 }
     );
+  });
+
+  it('renders explicit user-friendly error state with retry button when API fails', async () => {
+    server.use(
+      http.get('/api/transactions', () => {
+        return HttpResponse.json(
+          { message: 'Database connection failed.' },
+          { status: 500 }
+        );
+      })
+    );
+
+    renderWithProviders(<TransactionFeed />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Unable to load transaction history')).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByText(/We couldn't synchronize your transaction ledger. This is usually temporary/)
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', { name: /Retry Loading Transactions/i })
+    ).toBeInTheDocument();
+  });
+
+  it('renders clean empty state when no transactions exist for new merchant', async () => {
+    server.use(
+      http.get('/api/transactions', () => {
+        return HttpResponse.json({
+          transactions: [],
+          total: 0,
+          page: 1,
+          limit: 50,
+          totalPages: 0,
+          hasMore: false,
+          summary: {
+            creditVolumeKobo: 0,
+            debitVolumeKobo: 0,
+            creditCount: 0,
+            debitCount: 0,
+          },
+        });
+      })
+    );
+
+    renderWithProviders(<TransactionFeed onOpenSendMoney={vi.fn()} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Your transaction ledger is ready')).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByText(/You haven't made or received any payments yet. Tap below to initiate your first transfer./)
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', { name: /Make a Transfer/i })
+    ).toBeInTheDocument();
   });
 });
