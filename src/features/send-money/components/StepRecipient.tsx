@@ -167,7 +167,9 @@ export function StepRecipient({
           <div className="flex flex-wrap gap-1.5 mb-2.5">
             {isErrorBanks ? (
               <div className="w-full flex items-center justify-between rounded-xl bg-red-50 dark:bg-red-950/40 p-2.5 text-xs text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-900/60">
-                <span className="text-[11px]">Unable to load commercial banks directory.</span>
+                <span className="text-[11px]">
+                  Unable to load commercial banks directory.
+                </span>
                 <Button
                   type="button"
                   variant="ghost"
@@ -246,7 +248,8 @@ export function StepRecipient({
                     <span>Unable to load commercial banks</span>
                   </div>
                   <p className="text-slate-500 dark:text-slate-400 text-[11px] leading-relaxed">
-                    Please check your connection and try loading the institutions again.
+                    Please check your connection and try loading the banks
+                    again.
                   </p>
                   <Button
                     type="button"
@@ -264,7 +267,7 @@ export function StepRecipient({
                     No banks found matching "{bankSearch}"
                   </div>
                   <p className="text-slate-400 dark:text-slate-500 text-[11px]">
-                    Verify the institution name or 3-digit NIP code.
+                    Verify the institution name
                   </p>
                   <Button
                     type="button"
@@ -295,9 +298,8 @@ export function StepRecipient({
                             : "text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-950 dark:hover:text-slate-50"
                         }`}
                       >
-                        <span className="font-medium truncate mr-2">{bank.name}</span>
-                        <span className="font-mono text-[10px] text-slate-400 shrink-0">
-                          NIP {bank.code}
+                        <span className="font-medium truncate mr-2">
+                          {bank.name}
                         </span>
                       </button>
                     );
@@ -333,17 +335,14 @@ export function StepRecipient({
                     <div className="font-bold text-slate-900 dark:text-slate-50 text-sm truncate">
                       {selectedBankName}
                     </div>
-                    <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                      NIBSS NIP Code: {selectedBankCode}
-                    </div>
                   </>
                 ) : (
                   <span className="text-sm text-slate-500 dark:text-slate-400 font-normal">
                     {isLoadingBanks
                       ? "Loading institutions..."
                       : isErrorBanks
-                      ? "Unable to load banks (tap to retry)"
-                      : "Select or search bank..."}
+                        ? "Unable to load banks (tap to retry)"
+                        : "Select or search bank..."}
                   </span>
                 )}
               </div>
@@ -368,7 +367,7 @@ export function StepRecipient({
           htmlFor="nuban-input"
           className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
         >
-          10-Digit NUBAN Account Number
+          10-Digit Account Number
         </label>
         <div className="relative">
           <div className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
@@ -444,7 +443,9 @@ export function StepRecipient({
                   Account verification delayed or not found
                 </div>
                 <p className="text-[11px] text-red-700 dark:text-red-300 leading-relaxed">
-                  We couldn't verify this account name with the destination bank. Please confirm the 10-digit NUBAN number, or try again in a moment.
+                  We couldn't verify this account name with the destination
+                  bank. Please confirm the 10-digit NUBAN number, or try again
+                  in a moment.
                 </p>
                 {resolveMutation.error?.message && (
                   <p className="mt-1 font-mono text-[10px] text-red-600 dark:text-red-400 opacity-80 truncate">
@@ -462,7 +463,9 @@ export function StepRecipient({
                 disabled={resolveMutation.isPending}
                 className="h-7 text-xs border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-900/50 gap-1.5"
               >
-                <RefreshCw className={`h-3 w-3 ${resolveMutation.isPending ? 'animate-spin' : ''}`} />
+                <RefreshCw
+                  className={`h-3 w-3 ${resolveMutation.isPending ? "animate-spin" : ""}`}
+                />
                 Retry Verification
               </Button>
             </div>
