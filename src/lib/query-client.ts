@@ -14,6 +14,12 @@ export const queryClient = new QueryClient({
         }
         return failureCount < 2;
       },
+      retryDelay: (attemptIndex) => {
+        // Exponential backoff: 1s, 2s, 4s... with random jitter, capped at 10s
+        const baseDelay = Math.min(1000 * 2 ** attemptIndex, 10000);
+        const jitter = Math.floor(Math.random() * 250);
+        return baseDelay + jitter;
+      },
     },
     mutations: {
       retry: false, // Don't auto-retry mutations to prevent unintentional multiple charges

@@ -8,7 +8,7 @@
 [![Playwright](https://img.shields.io/badge/Playwright-E2E-45ba4b.svg)](https://playwright.dev/)
 [![WCAG 2.1 AA](https://img.shields.io/badge/WCAG%202.1-AA%20Compliant-002D62.svg)](https://www.w3.org/WAI/WCAG21/quickref/)
 
-A mission-critical merchant banking web application built for **First Bank of Nigeria (NovaBiz / NovaPay)**. Engineered with zero floating-point arithmetic, anti-double-spend idempotency, 60fps virtualized transaction ledgers, optimistic UI updates with snapshot rollback, and an interactive Mock Service Worker (MSW) network simulation control bar.
+A mission-critical merchant banking web application built for **First Bank of Nigeria (NovaBiz)**. Engineered with zero floating-point arithmetic, anti-double-spend idempotency, 60fps virtualized transaction ledgers, optimistic UI updates with snapshot rollback, and an interactive Mock Service Worker (MSW) network simulation control bar.
 
 ---
 
@@ -90,19 +90,19 @@ A mission-critical merchant banking web application built for **First Bank of Ni
 
 ### 1. State Management Choice: TanStack Query v5 over Redux/Zustand
 
-- **Decision**: We adopted **TanStack Query (React Query v5)** for all server/async state instead of a global state store like Redux Toolkit or Zustand.
+- **Decision**: I adopted **TanStack Query (React Query v5)** for all server/async state instead of a global state store like Redux Toolkit or Zustand.
 - **Rationale**: In banking dashboards, 90% of state represents remote financial resources (balances, transaction ledgers, exchange rates, beneficiaries). TanStack Query provides out-of-the-box cache invalidation, deduplication, background re-fetching, and declarative optimistic mutation rollbacks via query snapshotting.
 - **Trade-off**: Requires strict query key discipline (`['wallet', 'balance']`, `['transactions', filters]`) and query cancellation handlers (`cancelQueries`) to prevent background refetches from clobbering in-flight optimistic UI states.
 
 ### 2. Data Fetching & Mocking Strategy: MSW v2 (Mock Service Worker)
 
-- **Decision**: We implemented **Mock Service Worker (MSW v2)** intercepting requests at the browser Network Service Worker layer rather than using Axios mock adapters or in-memory API stubs.
+- **Decision**: Implemented **Mock Service Worker (MSW v2)** intercepting requests at the browser Network Service Worker layer rather than using Axios mock adapters or in-memory API stubs.
 - **Rationale**: MSW operates at the network protocol boundary, intercepting real browser `fetch` calls. This ensures identical HTTP request/response lifecycles, real latency simulation, HTTP status code handling, and network failure injections without modifying a single line of production application code.
 - **Trade-off**: Requires registering the service worker (`public/mockServiceWorker.js`) during dev boot and handling service worker activation lifecycles in automated test runners.
 
 ### 3. Precision Financial Math: Discrete Integer Kobo vs. Decimal Libraries
 
-- **Decision**: We engineered a custom zero-dependency integer Kobo engine with `Intl.NumberFormat` instead of pulling heavy decimal libraries like `bignumber.js` or `decimal.js`.
+- **Decision**: Engineered a custom zero-dependency integer Kobo engine with `Intl.NumberFormat` instead of pulling heavy decimal libraries like `bignumber.js` or `decimal.js`
 - **Rationale**: Nigerian banking rails (NIBSS / NIP) operate strictly on 2-decimal fractional sub-units ($\text{₦}1 = 100\text{ Kobo}$). Integer kobo representation fits safely within JavaScript's `Number.MAX_SAFE_INTEGER` ($2^{53} - 1 \approx \text{₦}90\text{ Trillion}$), delivering microsecond calculation speeds with zero bundle bloat.
 - **Trade-off**: Developers must strictly follow the rule that values passing into UI formatters or API payloads are integer kobo, converting user decimal inputs only at the input boundary.
 
