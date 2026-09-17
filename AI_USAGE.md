@@ -4,7 +4,7 @@
 
 This report provides a transparent audit of AI-assisted engineering methodologies used during the development of the **FirstBank NovaBiz Merchant Dashboard (FBN NovaPay)**. While generative AI accelerated initial scaffolding and interface prototyping, critical domain requirements for banking rails, precision ledger integrity, and network fault tolerance required rigorous human-in-the-loop oversight, static analysis, and programmatic validation.
 
-Below are three documented instances of AI prompts, initial generated outputs, critical financial/architectural hallucinations or pitfalls caught during review, and the production-grade engineering resolutions implemented.
+Below are four documented instances of AI prompts, initial generated outputs, critical financial/architectural hallucinations or pitfalls caught during review, and the production-grade engineering resolutions implemented.
 
 ---
 
@@ -228,12 +228,74 @@ export function useSendMoney() {
 
 ---
 
-## 5. Summary of AI Safety & Quality Safeguards
+## 5. Case Study 4: Untrusted Input Sanitization & Injection Defense
+
+### 5.1 The Prompt
+> *"Ensure all merchant-entered text, payment narrations, and transaction descriptions are sanitized and treated as untrusted input to prevent XSS and injection attacks."*
+
+### 5.2 Initial AI-Generated Output (Flawed)
+```typescript
+// Initial AI-generated draft in src/lib/utils.ts
+export function sanitizeText(text?: string | null): string {
+  if (!text) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+```
+
+### 5.3 Hallucination & Vulnerability Critique
+1. **Double-Escaping in React Virtual DOM**:
+   - The initial AI proposed converting special characters to HTML entities (`&amp;`, `&lt;`). However, in modern React applications, text children in JSX expressions are already natively escaped by the Virtual DOM via `document.createTextNode`. Pre-encoding them as HTML entities causes React to double-escape them, rendering broken literal entity strings on screen (e.g. displaying `"Food &amp; Drinks"` to the merchant instead of `"Food & Drinks"`).
+2. **Dead Code / Disconnected Anti-Pattern**:
+   - The AI generated the `sanitizeText` helper in `src/lib/utils.ts` but never imported or wired it into any input handlers, receipt modals, review cards, or feed components.
+3. **Missing Control Character & NIBSS Rail Filtering**:
+   - In Nigerian interbank banking rails (NIBSS NIP), transaction remarks must not contain unprintable ASCII control characters (`\x00-\x1F\x7F-\x9F`), which can corrupt interbank settlement packets, terminal receipt printers, and auditing logs.
+4. **CSV / Spreadsheet Formula Injection Vulnerability**:
+   - When merchants export transaction history or receipts to CSV/Excel, inputs prefixed with formula triggers (`=`, `+`, `-`, `@`, `\t`, `\r`) can execute arbitrary commands or malicious formulas (CSV Injection / DDE attacks) on the merchant's machine. The AI completely overlooked this attack vector.
+
+### 5.4 Production Engineering Resolution (`src/lib/utils.ts` & Component Integration)
+1. **Robust Sanitization Architecture (`src/lib/utils.ts`)**:
+   Refactored `sanitizeText` to strip dangerous HTML tags and control characters while preserving valid characters, and introduced `sanitizeNarration` tailored for banking standards:
+```typescript
+export function sanitizeText(text?: string | null): string {
+  if (!text) return '';
+  return String(text)
+    // Strip HTML and XML tags (<script>, <b>, <img>, etc.)
+    .replace(/<[^>]*>?/gm, '')
+    // Strip dangerous non-printable and ASCII control characters (keep standard whitespace)
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '')
+    .trim();
+}
+
+export function sanitizeNarration(text?: string | null): string {
+  if (!text) return '';
+  return sanitizeText(text)
+    // Neutralize formula injection triggers (=, +, -, @) for exports and downstream logs
+    .replace(/^[=+\-@\t\r]+/, '')
+    .slice(0, 50); // Enforce NIBSS 50-character limit
+}
+```
+
+2. **Active Component Integration**:
+   - **Real-Time Input Sanitization**: Wired `sanitizeNarration` directly to `onChange` in `StepAmount.tsx` to sanitize merchant remarks as they are typed or pasted.
+   - **Display Surface Protection**: Wrapped all untrusted counterparty names, bank names, and narrations with `sanitizeText` across `StepReview.tsx`, `TransferSuccessModal.tsx`, `TransactionRow.tsx`, and `TransactionReceiptModal.tsx`.
+
+3. **Automated Verification Suite (`src/lib/__tests__/utils.test.ts`)**:
+   Implemented 9 automated unit tests verifying that `<script>` tags, `<img onerror=...>`, nested HTML markup, ASCII control characters, and CSV formula injection payloads (`=cmd|...`, `@SUM(...)`) are completely neutralized while legitimate merchant business names are cleanly preserved.
+
+---
+
+## 6. Summary of AI Safety & Quality Safeguards
 
 | Domain Area | AI Vulnerability Caught | Enforced Engineering Standard | Verification Suite |
 |---|---|---|---|
 | **Currency Math** | IEEE-754 floating-point rounding errors | Zero floating-point arithmetic; 100% discrete integer Kobo math | Vitest Unit Suite (13 tests) |
 | **Idempotency** | Duplicate debits on network retry | RFC4122 v4 UUID headers + Map cache | Integration & E2E Suites |
 | **State Rollback** | Incomplete mutation rollback | Dual query cancellation + Snapshot store | Vitest & Playwright E2E |
+| **Input Sanitization** | Double-escaping, CSV injection, unlinked helper | Regex tag stripping, control char removal, formula neutralization | Vitest Unit Suite (9 tests) |
 | **Feed Performance** | Unbounded DOM rendering of 1,000+ items | `react-window` 60fps feed virtualization | Manual & Performance Profiling |
 | **Accessibility** | Missing focus traps, untagged buttons | WCAG 2.1 AA keyboard traps, ARIA live regions | Playwright A11y Suite |
