@@ -4,6 +4,17 @@
 
 This report provides a transparent audit of AI-assisted engineering methodologies used during the development of the **FirstBank NovaBiz Merchant Dashboard (FBN NovaPay)**. While generative AI accelerated initial scaffolding and interface prototyping, critical domain requirements for banking rails, precision ledger integrity, and network fault tolerance required rigorous human-in-the-loop oversight, static analysis, and programmatic validation.
 
+### 1.1 AI Tools & Engineering Platform
+
+The project was built using a hybrid, multi-model pair programming workflow orchestrated within the **Antigravity** agentic development platform:
+
+* **Development & Agentic Platform — Antigravity**:
+  - Served as the central agentic IDE for workspace indexing, multi-file code transformations, autonomous terminal execution, real-time feedback loops, and browser verification subagents.
+* **Planning & Architecture — Claude Models**:
+  - Leveraged primarily for high-level architectural discovery, implementation planning (`implementation_plan.md`), design system token hierarchy, and designing robust financial workflows (e.g. TanStack Query optimistic rollback state machines and NIBSS rail clearing rules).
+* **Implementation & Coding — Gemini Models**:
+  - Leveraged for hands-on code authoring, component implementation in React 19 / TypeScript, strict zero-floating-point Kobo integer refactoring, unit and integration test generation in Vitest, and resolving compiler/type issues.
+
 Below are four documented instances of AI prompts, initial generated outputs, critical financial/architectural hallucinations or pitfalls caught during review, and the production-grade engineering resolutions implemented.
 
 ---
