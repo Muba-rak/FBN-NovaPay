@@ -1,6 +1,7 @@
 import React from "react";
 import { Transaction } from "../types";
 import { formatKoboToNaira } from "@/lib/format-money";
+import { sanitizeText } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowDownLeft,
@@ -81,9 +82,11 @@ export const TransactionRow = React.memo<TransactionRowProps>(
     const isPending = transaction.status === "pending";
     const isFailed = transaction.status === "failed";
 
-    const counterpartyName = isCredit
-      ? transaction.senderName || "Anonymous Customer"
-      : transaction.recipientName || "Beneficiary";
+    const counterpartyName = sanitizeText(
+      isCredit
+        ? transaction.senderName || "Anonymous Customer"
+        : transaction.recipientName || "Beneficiary"
+    );
 
     const formattedAmount = formatKoboToNaira(transaction.amountKobo, {
       showSign: true,

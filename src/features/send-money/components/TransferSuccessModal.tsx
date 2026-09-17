@@ -1,5 +1,6 @@
 import { SendMoneyResponse } from "../types";
 import { formatKoboToNaira } from "@/lib/format-money";
+import { sanitizeText } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { CheckCircle2, Download, Share2, ShieldCheck } from "lucide-react";
@@ -58,7 +59,7 @@ export function TransferSuccessModal({
           {formatKoboToNaira(response.amountKobo)}
         </div>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-          Sent to <strong className="text-slate-900 dark:text-slate-50">{response.recipientName}</strong>
+          Sent to <strong className="text-slate-900 dark:text-slate-50">{sanitizeText(response.recipientName)}</strong>
         </p>
       </div>
 
@@ -69,7 +70,7 @@ export function TransferSuccessModal({
             Destination
           </span>
           <span className="font-semibold text-slate-900 dark:text-slate-50">
-            {response.recipientBankName} ({response.recipientAccount})
+            {sanitizeText(response.recipientBankName)} ({response.recipientAccount})
           </span>
         </div>
 

@@ -10,16 +10,30 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * Sanitizes merchant descriptions, recipient names, and untrusted inputs
- * against XSS injection attacks.
+ * against XSS injection, unprintable control characters, and malicious payloads.
  */
 export function sanitizeText(text?: string | null): string {
   if (!text) return '';
   return String(text)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;');
+    // Strip HTML and XML tags (<script>, <b>, <img>, etc.)
+    .replace(/<[^>]*>?/gm, '')
+    // Strip dangerous non-printable and ASCII control characters (keep standard whitespace)
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '')
+    .trim();
+}
+
+/**
+ * Sanitizes merchant payment narrations to conform with NIBSS NIP banking standards:
+ * - Strips HTML tags and unprintable control characters
+ * - Neutralizes formula injection characters (=, +, -, @)
+ * - Limits length to 50 characters (NIBSS standard)
+ */
+export function sanitizeNarration(text?: string | null): string {
+  if (!text) return '';
+  return sanitizeText(text)
+    // Neutralize formula injection triggers for exports and downstream logs
+    .replace(/^[=+\-@\t\r]+/, '')
+    .slice(0, 50);
 }
 
 /**

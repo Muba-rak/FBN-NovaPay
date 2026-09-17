@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Transaction } from "../types";
 import { formatKoboToNaira } from "@/lib/format-money";
+import { sanitizeText } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -133,8 +134,8 @@ export function TransactionReceiptModal({
               </span>
               <span className="font-bold text-slate-900 dark:text-slate-50 text-right max-w-55">
                 {isCredit
-                  ? transaction.senderName || "Anonymous Customer"
-                  : transaction.recipientName || "Beneficiary"}
+                  ? sanitizeText(transaction.senderName) || "Anonymous Customer"
+                  : sanitizeText(transaction.recipientName) || "Beneficiary"}
               </span>
             </div>
 
@@ -145,7 +146,7 @@ export function TransactionReceiptModal({
                   Bank / Institution
                 </span>
                 <span className="font-semibold text-slate-900 dark:text-slate-50">
-                  {transaction.senderBankName || transaction.recipientBankName}
+                  {sanitizeText(transaction.senderBankName || transaction.recipientBankName)}
                 </span>
               </div>
             )}
@@ -201,7 +202,7 @@ export function TransactionReceiptModal({
                   Narration
                 </span>
                 <span className="font-medium text-slate-700 dark:text-slate-300 text-right max-w-55">
-                  {transaction.narration}
+                  {sanitizeText(transaction.narration)}
                 </span>
               </div>
             )}

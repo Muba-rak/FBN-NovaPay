@@ -1,4 +1,5 @@
 import { formatKoboToNaira, NIP_TRANSFER_FEE_KOBO } from "@/lib/format-money";
+import { sanitizeText } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ShieldCheck, Lock } from "lucide-react";
 
@@ -35,7 +36,7 @@ export function StepReview({
           {formatKoboToNaira(amountKobo)}
         </div>
         <div className="mt-1 text-xs text-slate-200">
-          to <strong className="text-white">{recipientName}</strong>
+          to <strong className="text-white">{sanitizeText(recipientName)}</strong>
         </div>
       </div>
 
@@ -46,7 +47,7 @@ export function StepReview({
             Beneficiary Name
           </span>
           <span className="font-bold text-slate-900 dark:text-slate-50 text-right max-w-50">
-            {recipientName}
+            {sanitizeText(recipientName)}
           </span>
         </div>
 
@@ -101,7 +102,7 @@ export function StepReview({
               Narration
             </span>
             <span className="font-medium text-slate-700 dark:text-slate-300 text-right max-w-50">
-              {narration}
+              {sanitizeText(narration)}
             </span>
           </div>
         )}

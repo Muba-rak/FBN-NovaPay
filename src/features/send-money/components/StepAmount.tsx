@@ -4,6 +4,7 @@ import {
   NIP_TRANSFER_FEE_KOBO,
   DAILY_TRANSFER_LIMIT_KOBO,
 } from "@/lib/format-money";
+import { sanitizeNarration } from "@/lib/utils";
 import { useBalance } from "@/features/dashboard/hooks/useBalance";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -186,7 +187,7 @@ export function StepAmount({
           maxLength={50}
           placeholder="e.g. Invoice settlement, Goods purchase"
           value={narration}
-          onChange={(e) => onChangeNarration(e.target.value)}
+          onChange={(e) => onChangeNarration(sanitizeNarration(e.target.value))}
           className="text-sm h-10 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50"
         />
       </div>
