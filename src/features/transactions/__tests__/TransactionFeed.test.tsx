@@ -80,7 +80,7 @@ describe('TransactionRow Component', () => {
 });
 
 describe('TransactionFilters Component', () => {
-  it('renders search input and filter chips', () => {
+  it('renders search input and select dropdown filters', () => {
     const handleSearch = vi.fn();
     const handleStatus = vi.fn();
     const handleDate = vi.fn();
@@ -103,27 +103,55 @@ describe('TransactionFilters Component', () => {
     expect(
       screen.getByPlaceholderText(/Search by customer, reference/i)
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Successful' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Today' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Credits (Inflow)' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /Date Range filter/i })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /Status filter/i })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /Type filter/i })).toBeInTheDocument();
+    expect(screen.getByText('100')).toBeInTheDocument();
   });
 
-  it('calls onStatusChange when status chip is clicked', () => {
-    const handleStatus = vi.fn();
+  it('renders custom date range pickers when dateRange is custom and triggers callbacks', () => {
+    const handleStartDate = vi.fn();
+    const handleEndDate = vi.fn();
+
     render(
       <TransactionFilters
-        filters={{ dateRange: 'all', status: 'all', type: 'all', search: '' }}
+        filters={{
+          dateRange: 'custom',
+          status: 'all',
+          type: 'all',
+          search: '',
+          startDate: '2026-09-01',
+          endDate: '2026-09-15',
+        }}
         onSearchChange={vi.fn()}
         onDateRangeChange={vi.fn()}
-        onStatusChange={handleStatus}
+        onStartDateChange={handleStartDate}
+        onEndDateChange={handleEndDate}
+        onStatusChange={vi.fn()}
         onTypeChange={vi.fn()}
         onResetFilters={vi.fn()}
-        hasActiveFilters={false}
+        hasActiveFilters={true}
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Successful' }));
-    expect(handleStatus).toHaveBeenCalledWith('successful');
+    const startInput = screen.getByLabelText(/Start date/i);
+    const endInput = screen.getByLabelText(/End date/i);
+
+    expect(startInput).toHaveValue('2026-09-01');
+    expect(endInput).toHaveValue('2026-09-15');
+
+    fireEvent.change(startInput, { target: { value: '2026-09-05' } });
+    expect(handleStartDate).toHaveBeenCalledWith('2026-09-05');
+
+    fireEvent.change(endInput, { target: { value: '2026-09-10' } });
+    expect(handleEndDate).toHaveBeenCalledWith('2026-09-10');
+
+    // Clear dates button
+    const clearDatesBtn = screen.getByRole('button', { name: /Clear Dates/i });
+    expect(clearDatesBtn).toBeInTheDocument();
+    fireEvent.click(clearDatesBtn);
+    expect(handleStartDate).toHaveBeenCalledWith(undefined);
+    expect(handleEndDate).toHaveBeenCalledWith(undefined);
   });
 });
 

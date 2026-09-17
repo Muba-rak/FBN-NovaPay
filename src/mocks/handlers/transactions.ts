@@ -31,6 +31,8 @@ export const transactionHandlers = [
     const status = url.searchParams.get('status') || 'all';
     const type = url.searchParams.get('type') || 'all';
     const search = (url.searchParams.get('search') || '').toLowerCase().trim();
+    const startDateParam = url.searchParams.get('startDate');
+    const endDateParam = url.searchParams.get('endDate');
     const limit = parseInt(url.searchParams.get('limit') || '10000', 10);
     const offset = parseInt(url.searchParams.get('offset') || '0', 10);
 
@@ -42,10 +44,22 @@ export const transactionHandlers = [
     const filtered = seedTransactions.filter((tx) => {
       const txTime = new Date(tx.createdAt).getTime();
 
-      // Date Range Filter
+      // Preset Date Range Filter
       if (dateRange === 'today' && txTime < todayStart) return false;
       if (dateRange === '7d' && txTime < sevenDaysAgo) return false;
       if (dateRange === '30d' && txTime < thirtyDaysAgo) return false;
+
+      // Custom Date Range (Start Date & End Date)
+      if (startDateParam) {
+        const start = new Date(startDateParam).getTime();
+        if (!isNaN(start) && txTime < start) return false;
+      }
+      if (endDateParam) {
+        const end = new Date(endDateParam);
+        end.setHours(23, 59, 59, 999);
+        const endTime = end.getTime();
+        if (!isNaN(endTime) && txTime > endTime) return false;
+      }
 
       // Status Filter
       if (status !== 'all' && tx.status !== status) return false;

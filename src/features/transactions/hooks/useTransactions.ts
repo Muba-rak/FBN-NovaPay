@@ -7,6 +7,8 @@ const defaultFilters: TransactionFiltersState = {
   status: 'all',
   type: 'all',
   search: '',
+  startDate: undefined,
+  endDate: undefined,
 };
 
 export function useTransactions() {
@@ -27,11 +29,21 @@ export function useTransactions() {
     if (filters.status !== 'all') params.set('status', filters.status);
     if (filters.type !== 'all') params.set('type', filters.type);
     if (debouncedSearch) params.set('search', debouncedSearch);
+    if (filters.startDate) params.set('startDate', filters.startDate);
+    if (filters.endDate) params.set('endDate', filters.endDate);
     return params.toString();
-  }, [filters.dateRange, filters.status, filters.type, debouncedSearch]);
+  }, [filters.dateRange, filters.status, filters.type, debouncedSearch, filters.startDate, filters.endDate]);
 
   const query = useQuery<TransactionsResponse>({
-    queryKey: ['transactions', filters.dateRange, filters.status, filters.type, debouncedSearch],
+    queryKey: [
+      'transactions',
+      filters.dateRange,
+      filters.status,
+      filters.type,
+      debouncedSearch,
+      filters.startDate,
+      filters.endDate,
+    ],
     queryFn: async () => {
       const res = await fetch(`/api/transactions?${queryParams}`);
       if (!res.ok) {
@@ -44,7 +56,37 @@ export function useTransactions() {
   });
 
   const setDateRange = useCallback((dateRange: DateRangeFilter) => {
-    setFilters((prev) => ({ ...prev, dateRange }));
+    setFilters((prev) => ({
+      ...prev,
+      dateRange,
+      // If user switches away from custom, clear custom dates
+      ...(dateRange !== 'custom' ? { startDate: undefined, endDate: undefined } : {}),
+    }));
+  }, []);
+
+  const setStartDate = useCallback((startDate?: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      dateRange: 'custom',
+      startDate,
+    }));
+  }, []);
+
+  const setEndDate = useCallback((endDate?: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      dateRange: 'custom',
+      endDate,
+    }));
+  }, []);
+
+  const setCustomDateRange = useCallback((startDate?: string, endDate?: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      dateRange: 'custom',
+      startDate,
+      endDate,
+    }));
   }, []);
 
   const setStatus = useCallback((status: StatusFilter) => {
@@ -68,7 +110,9 @@ export function useTransactions() {
       filters.dateRange !== 'all' ||
       filters.status !== 'all' ||
       filters.type !== 'all' ||
-      filters.search.trim().length > 0
+      filters.search.trim().length > 0 ||
+      !!filters.startDate ||
+      !!filters.endDate
     );
   }, [filters]);
 
@@ -77,6 +121,9 @@ export function useTransactions() {
     filters,
     debouncedSearch,
     setDateRange,
+    setStartDate,
+    setEndDate,
+    setCustomDateRange,
     setStatus,
     setType,
     setSearch,

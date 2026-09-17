@@ -1,6 +1,13 @@
-import { Search, X, Filter, RotateCcw } from 'lucide-react';
+import { Search, X, Filter, RotateCcw, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   TransactionFiltersState,
   DateRangeFilter,
@@ -12,6 +19,8 @@ interface TransactionFiltersProps {
   filters: TransactionFiltersState;
   onSearchChange: (search: string) => void;
   onDateRangeChange: (dateRange: DateRangeFilter) => void;
+  onStartDateChange?: (startDate?: string) => void;
+  onEndDateChange?: (endDate?: string) => void;
   onStatusChange: (status: StatusFilter) => void;
   onTypeChange: (type: TypeFilter) => void;
   onResetFilters: () => void;
@@ -24,10 +33,11 @@ const dateOptions: { label: string; value: DateRangeFilter }[] = [
   { label: 'Today', value: 'today' },
   { label: 'Last 7 Days', value: '7d' },
   { label: 'Last 30 Days', value: '30d' },
+  { label: 'Custom Range', value: 'custom' },
 ];
 
 const statusOptions: { label: string; value: StatusFilter }[] = [
-  { label: 'All Status', value: 'all' },
+  { label: 'All Statuses', value: 'all' },
   { label: 'Successful', value: 'successful' },
   { label: 'Pending', value: 'pending' },
   { label: 'Failed', value: 'failed' },
@@ -43,6 +53,8 @@ export function TransactionFilters({
   filters,
   onSearchChange,
   onDateRangeChange,
+  onStartDateChange,
+  onEndDateChange,
   onStatusChange,
   onTypeChange,
   onResetFilters,
@@ -50,7 +62,7 @@ export function TransactionFilters({
   totalFilteredCount,
 }: TransactionFiltersProps) {
   return (
-    <div className="space-y-3 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 p-4">
+    <div className="space-y-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 p-4 transition-colors">
       {/* Top Row: Search & Reset */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
         {/* Search Bar */}
@@ -65,7 +77,7 @@ export function TransactionFilters({
             placeholder="Search by customer, reference, terminal ID..."
             value={filters.search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-9 pr-9 text-sm"
+            className="pl-9 pr-9 text-sm bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-50"
           />
           {filters.search && (
             <button
@@ -80,7 +92,7 @@ export function TransactionFilters({
         </div>
 
         {/* Results Counter & Reset Button */}
-        <div className="flex items-center justify-between sm:justify-end gap-2">
+        <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0">
           {totalFilteredCount !== undefined && (
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
               <span className="font-bold text-slate-900 dark:text-slate-50 tabular-nums">
@@ -96,7 +108,7 @@ export function TransactionFilters({
               variant="ghost"
               size="sm"
               onClick={onResetFilters}
-              className="h-8 gap-1.5 text-xs text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 hover:text-amber-800"
+              className="h-8 gap-1.5 text-xs text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 hover:text-amber-800 dark:hover:text-amber-300"
             >
               <RotateCcw className="h-3 w-3" />
               Reset Filters
@@ -105,84 +117,172 @@ export function TransactionFilters({
         </div>
       </div>
 
-      {/* Filter Chips / Segments */}
-      <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-200/70 dark:border-slate-800/70">
-        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 mr-1 uppercase tracking-wider">
-          <Filter className="h-3.5 w-3.5" />
-          <span>Filters:</span>
-        </div>
+      {/* Filter Dropdowns Controls */}
+      <div className="pt-2.5 border-t border-slate-200/70 dark:border-slate-800/70 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2.5">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0 uppercase tracking-wider">
+            <Filter className="h-3.5 w-3.5 text-amber-500" />
+            <span>Filter By:</span>
+          </div>
 
-        {/* Date Range Chips */}
-        <div className="flex flex-wrap gap-1" role="group" aria-label="Date range filter">
-          {dateOptions.map((opt) => {
-            const isSelected = filters.dateRange === opt.value;
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => onDateRangeChange(opt.value)}
-                aria-pressed={isSelected}
-                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all cursor-pointer ${
-                  isSelected
-                    ? 'bg-[#002D62] dark:bg-[#D4AF37] text-white dark:text-slate-950 shadow-2xs font-semibold'
-                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-slate-50 shadow-2xs'
-                }`}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 flex-1">
+            {/* 1. Date Range Dropdown */}
+            <div>
+              <label htmlFor="filter-date-range" className="sr-only">
+                Filter by date range
+              </label>
+              <Select
+                value={filters.dateRange}
+                onValueChange={(val) => onDateRangeChange(val as DateRangeFilter)}
               >
-                {opt.label}
-              </button>
-            );
-          })}
-        </div>
+                <SelectTrigger
+                  id="filter-date-range"
+                  aria-label="Date Range filter"
+                  className="w-full h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 font-medium"
+                >
+                  <SelectValue placeholder="Date Range" />
+                </SelectTrigger>
+                <SelectContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xl text-xs">
+                  {dateOptions.map((opt) => (
+                    <SelectItem
+                      key={opt.value}
+                      value={opt.value}
+                      className="cursor-pointer text-xs"
+                    >
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-        <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block mx-1" />
-
-        {/* Status Chips */}
-        <div className="flex flex-wrap gap-1" role="group" aria-label="Status filter">
-          {statusOptions.map((opt) => {
-            const isSelected = filters.status === opt.value;
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => onStatusChange(opt.value)}
-                aria-pressed={isSelected}
-                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all cursor-pointer ${
-                  isSelected
-                    ? 'bg-[#002D62] dark:bg-[#D4AF37] text-white dark:text-slate-950 shadow-2xs font-semibold'
-                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-slate-50 shadow-2xs'
-                }`}
+            {/* 2. Status Dropdown */}
+            <div>
+              <label htmlFor="filter-status" className="sr-only">
+                Filter by transaction status
+              </label>
+              <Select
+                value={filters.status}
+                onValueChange={(val) => onStatusChange(val as StatusFilter)}
               >
-                {opt.label}
-              </button>
-            );
-          })}
-        </div>
+                <SelectTrigger
+                  id="filter-status"
+                  aria-label="Status filter"
+                  className="w-full h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 font-medium"
+                >
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xl text-xs">
+                  {statusOptions.map((opt) => (
+                    <SelectItem
+                      key={opt.value}
+                      value={opt.value}
+                      className="cursor-pointer text-xs"
+                    >
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-        <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block mx-1" />
-
-        {/* Type Chips */}
-        <div className="flex flex-wrap gap-1" role="group" aria-label="Transaction type filter">
-          {typeOptions.map((opt) => {
-            const isSelected = filters.type === opt.value;
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => onTypeChange(opt.value)}
-                aria-pressed={isSelected}
-                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-all cursor-pointer ${
-                  isSelected
-                    ? 'bg-[#002D62] dark:bg-[#D4AF37] text-white dark:text-slate-950 shadow-2xs font-semibold'
-                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-slate-50 shadow-2xs'
-                }`}
+            {/* 3. Type Dropdown */}
+            <div>
+              <label htmlFor="filter-type" className="sr-only">
+                Filter by transaction type
+              </label>
+              <Select
+                value={filters.type}
+                onValueChange={(val) => onTypeChange(val as TypeFilter)}
               >
-                {opt.label}
-              </button>
-            );
-          })}
+                <SelectTrigger
+                  id="filter-type"
+                  aria-label="Type filter"
+                  className="w-full h-9 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 font-medium"
+                >
+                  <SelectValue placeholder="Type" />
+                </SelectTrigger>
+                <SelectContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xl text-xs">
+                  {typeOptions.map((opt) => (
+                    <SelectItem
+                      key={opt.value}
+                      value={opt.value}
+                      className="cursor-pointer text-xs"
+                    >
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </div>
+
+        {/* Custom Start Date and End Date Range Fields */}
+        {filters.dateRange === 'custom' && (
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-2.5 border-t border-slate-200/60 dark:border-slate-800/60 animate-in fade-in-50 duration-200">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0">
+              <Calendar className="h-3.5 w-3.5 text-amber-500" />
+              <span>Custom Date Range:</span>
+            </div>
+
+            <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+              {/* Start Date */}
+              <div className="flex items-center gap-2 flex-1">
+                <label
+                  htmlFor="tx-start-date"
+                  className="text-xs font-semibold text-slate-600 dark:text-slate-400 shrink-0"
+                >
+                  Start:
+                </label>
+                <Input
+                  id="tx-start-date"
+                  type="date"
+                  aria-label="Start date"
+                  value={filters.startDate || ''}
+                  onChange={(e) => onStartDateChange?.(e.target.value || undefined)}
+                  className="h-8.5 text-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-50 w-full font-mono"
+                />
+              </div>
+
+              {/* End Date */}
+              <div className="flex items-center gap-2 flex-1">
+                <label
+                  htmlFor="tx-end-date"
+                  className="text-xs font-semibold text-slate-600 dark:text-slate-400 shrink-0"
+                >
+                  End:
+                </label>
+                <Input
+                  id="tx-end-date"
+                  type="date"
+                  aria-label="End date"
+                  min={filters.startDate}
+                  value={filters.endDate || ''}
+                  onChange={(e) => onEndDateChange?.(e.target.value || undefined)}
+                  className="h-8.5 text-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-50 w-full font-mono"
+                />
+              </div>
+
+              {/* Clear Date Range */}
+              {(filters.startDate || filters.endDate) && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    onStartDateChange?.(undefined);
+                    onEndDateChange?.(undefined);
+                  }}
+                  className="h-8 text-xs text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 shrink-0"
+                >
+                  Clear Dates
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
-

@@ -34,6 +34,8 @@ export function TransactionFeed({ onOpenSendMoney }: TransactionFeedProps) {
     isFetching,
     filters,
     setDateRange,
+    setStartDate,
+    setEndDate,
     setStatus,
     setType,
     setSearch,
@@ -161,6 +163,8 @@ export function TransactionFeed({ onOpenSendMoney }: TransactionFeedProps) {
         filters={filters}
         onSearchChange={setSearch}
         onDateRangeChange={setDateRange}
+        onStartDateChange={setStartDate}
+        onEndDateChange={setEndDate}
         onStatusChange={setStatus}
         onTypeChange={setType}
         onResetFilters={resetFilters}
@@ -171,7 +175,11 @@ export function TransactionFeed({ onOpenSendMoney }: TransactionFeedProps) {
       {/* Screen Reader Live Announcement */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         {!isLoading &&
-          `Showing ${filteredCount} transactions for ${filters.dateRange} date range and ${filters.status} status.`}
+          `Showing ${filteredCount} transactions for ${
+            filters.dateRange === 'custom' && (filters.startDate || filters.endDate)
+              ? `custom range ${filters.startDate || 'start'} to ${filters.endDate || 'now'}`
+              : filters.dateRange
+          } date range and ${filters.status} status.`}
       </div>
 
       {/* Main Content Area */}
