@@ -136,7 +136,7 @@ export function SendMoneyModal({ isOpen, onClose }: SendMoneyModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-[480px] p-0 overflow-hidden flex flex-col max-h-[90vh]">
+      <DialogContent className="max-w-120 p-0 overflow-hidden flex flex-col max-h-[90vh]">
         {step !== "success" && (
           <DialogHeader className="p-5 sm:p-6 pb-3.5 border-b border-slate-100/90 dark:border-slate-800/90 bg-white dark:bg-[#0b1736] shrink-0 space-y-2">
             <div className="flex items-center justify-between pr-7">
@@ -160,7 +160,9 @@ export function SendMoneyModal({ isOpen, onClose }: SendMoneyModalProps) {
                 <div
                   key={s}
                   className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                    s <= getStepNumber() ? "bg-[#002D62] dark:bg-[#D4AF37]" : "bg-slate-100 dark:bg-slate-800"
+                    s <= getStepNumber()
+                      ? "bg-[#002D62] dark:bg-[#D4AF37]"
+                      : "bg-slate-100 dark:bg-slate-800"
                   }`}
                 />
               ))}

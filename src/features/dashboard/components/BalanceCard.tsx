@@ -57,7 +57,7 @@ export function BalanceCard({
 
   if (isLoading) {
     return (
-      <div className="w-full rounded-2xl bg-linear-to-br from-[#002D62] via-[#001D40] to-[#00142C] p-6 sm:p-8 text-white shadow-xl animate-pulse min-h-[260px] flex flex-col justify-between">
+      <div className="w-full rounded-2xl bg-linear-to-br from-[#002D62] via-[#001D40] to-[#00142C] p-6 sm:p-8 text-white shadow-xl animate-pulse min-h-65 flex flex-col justify-between">
         <div className="flex justify-between items-start">
           <div className="space-y-2">
             <div className="h-4 w-32 bg-white/20 rounded" />
@@ -84,7 +84,7 @@ export function BalanceCard({
       <div
         role="alert"
         aria-live="assertive"
-        className="relative w-full overflow-hidden rounded-2xl bg-linear-to-br from-[#002D62] via-[#001D40] to-[#040D1E] p-6 sm:p-8 text-white shadow-xl border border-red-500/30 min-h-[260px] flex flex-col justify-between transition-all"
+        className="relative w-full overflow-hidden rounded-2xl bg-linear-to-br from-[#002D62] via-[#001D40] to-[#040D1E] p-6 sm:p-8 text-white shadow-xl border border-red-500/30 min-h-65 flex flex-col justify-between transition-all"
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center space-x-3">
@@ -110,8 +110,8 @@ export function BalanceCard({
 
         <div className="my-4 rounded-xl bg-white/5 border border-white/10 p-4 space-y-2">
           <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
-            We're having trouble connecting to the FirstBank core banking network.
-            Your funds are completely safe. This is usually temporary.
+            We're having trouble connecting to the FirstBank core banking
+            network. Your funds are completely safe. This is usually temporary.
           </p>
           <div className="flex items-center gap-1.5 text-[11px] text-amber-300 font-medium">
             <ShieldCheck className="h-3.5 w-3.5 text-amber-400" />

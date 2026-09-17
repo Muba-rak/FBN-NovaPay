@@ -134,7 +134,7 @@ export const TransactionRow = React.memo<TransactionRowProps>(
               </span>
             </div>
             <div className="mt-0.5 flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400">
-              <span className="font-mono text-[11px] truncate max-w-[120px] sm:max-w-[180px]">
+              <span className="font-mono text-[11px] truncate max-w-30 sm:max-w-45">
                 {transaction.reference}
               </span>
               <span>•</span>
