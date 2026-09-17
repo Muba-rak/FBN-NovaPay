@@ -5,25 +5,10 @@
  * simulated failure rates (0% - 100%), and network disconnects (offline mode).
  */
 
-export type NextTransferBehavior =
-  | 'none'
-  | 'succeeds'
-  | 'error_nothing_sent'
-  | 'error_money_sent'
-  | 'timeout_nothing_sent'
-  | 'timeout_money_sent';
-
-export type NextSettlementBehavior =
-  | 'none'
-  | 'settles'
-  | 'fails';
-
 export interface SimulationConfig {
   latencyMs: number;
   failureRate: number; // 0.0 to 1.0 (e.g. 0.25 = 25% failure)
   offline: boolean;
-  nextTransferBehavior: NextTransferBehavior;
-  nextSettlementBehavior: NextSettlementBehavior;
 }
 
 const STORAGE_KEY = 'fbn_novapay_simulation_config';
@@ -32,8 +17,6 @@ const defaultConfig: SimulationConfig = {
   latencyMs: 350,
   failureRate: 0.0,
   offline: false,
-  nextTransferBehavior: 'none',
-  nextSettlementBehavior: 'none',
 };
 
 function loadStoredConfig(): SimulationConfig {
@@ -76,4 +59,3 @@ export function subscribeSimulationConfig(listener: SimulationChangeListener) {
     listeners.delete(listener);
   };
 }
-

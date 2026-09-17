@@ -1,6 +1,6 @@
 import { http, HttpResponse, delay } from 'msw';
 import { currentBalanceState, seedTransactions } from '../data/transactions';
-import { simulationConfig, updateSimulationConfig } from '../config';
+import { simulationConfig } from '../config';
 import { Bank, Beneficiary, AccountResolutionResult, SendMoneyPayload, SendMoneyResponse } from '@/features/send-money/types';
 import { Transaction } from '@/features/transactions/types';
 
@@ -114,64 +114,25 @@ export const transferHandlers = [
 
   // 4. Send Money Transfer Execution
   http.post('/api/transfers/send', async ({ request }) => {
-    const forcedTransfer = simulationConfig.nextTransferBehavior;
-
-    // Reset single-use override immediately
-    if (forcedTransfer !== 'none') {
-      updateSimulationConfig({ nextTransferBehavior: 'none' });
+    // A. Simulated Latency
+    if (simulationConfig.latencyMs > 0) {
+      await delay(simulationConfig.latencyMs);
     }
 
-    // Check pre-transfer overrides
-    if (forcedTransfer === 'error_nothing_sent') {
-      if (simulationConfig.latencyMs > 0) {
-        await delay(Math.min(simulationConfig.latencyMs, 500));
-      }
+    // B. Simulated Offline Mode
+    if (simulationConfig.offline) {
+      return HttpResponse.error();
+    }
+
+    // C. Simulated Failure Rate (e.g. for testing optimistic rollback)
+    if (simulationConfig.failureRate > 0 && Math.random() < simulationConfig.failureRate) {
       return HttpResponse.json(
         {
           code: 'NIBSS_ROUTING_FAILURE',
-          message: 'Transfer rejected before transmission. Server error (05). Nothing was written or debited.',
+          message: 'Transfer rejected by destination switch. NIBSS timeout error (91). Balance was not debited.',
         },
         { status: 500 }
       );
-    }
-
-    if (forcedTransfer === 'timeout_nothing_sent') {
-      await delay(1200);
-      return HttpResponse.json(
-        {
-          code: 'NIBSS_TIMEOUT_NOTHING_SENT',
-          message: 'Request timed out after 15s. Server never replied and nothing was written.',
-        },
-        { status: 504 }
-      );
-    }
-
-    // If forced to succeed, bypass offline and failure rate!
-    if (forcedTransfer !== 'succeeds') {
-      // A. Simulated Latency
-      if (simulationConfig.latencyMs > 0) {
-        await delay(simulationConfig.latencyMs);
-      }
-
-      // B. Simulated Offline Mode
-      if (simulationConfig.offline) {
-        return HttpResponse.error();
-      }
-
-      // C. Simulated Failure Rate (e.g. for testing optimistic rollback)
-      if (simulationConfig.failureRate > 0 && Math.random() < simulationConfig.failureRate) {
-        return HttpResponse.json(
-          {
-            code: 'NIBSS_ROUTING_FAILURE',
-            message: 'Transfer rejected by destination switch. NIBSS timeout error (91). Balance was not debited.',
-          },
-          { status: 500 }
-        );
-      }
-    } else {
-      if (simulationConfig.latencyMs > 0) {
-        await delay(Math.min(simulationConfig.latencyMs, 300));
-      }
     }
 
     const idempotencyKey = request.headers.get('Idempotency-Key');
@@ -237,28 +198,6 @@ export const transferHandlers = [
     // Prepend to transaction ledger
     seedTransactions.unshift(newTx);
 
-    // Check post-deduction forced error / timeout behaviors!
-    if (forcedTransfer === 'error_money_sent') {
-      return HttpResponse.json(
-        {
-          code: 'NIBSS_MONEY_SENT_ERROR',
-          message: 'Transfer went through core rail, then destination switch replied with server error (Reconciliation required).',
-        },
-        { status: 500 }
-      );
-    }
-
-    if (forcedTransfer === 'timeout_money_sent') {
-      await delay(1200);
-      return HttpResponse.json(
-        {
-          code: 'NIBSS_TIMEOUT_MONEY_SENT',
-          message: 'Transfer went through, but the confirmation reply never arrived. The case reconciliation exists for.',
-        },
-        { status: 504 }
-      );
-    }
-
     const response: SendMoneyResponse = {
       success: true,
       transactionId: txId,
@@ -281,69 +220,4 @@ export const transferHandlers = [
 
     return HttpResponse.json(response);
   }),
-
-  // 5. Merchant Settlement Trigger
-  http.post('/api/settlements/trigger', async () => {
-    const forcedSettlement = simulationConfig.nextSettlementBehavior;
-
-    if (forcedSettlement !== 'none') {
-      updateSimulationConfig({ nextSettlementBehavior: 'none' });
-    }
-
-    if (simulationConfig.latencyMs > 0) {
-      await delay(Math.min(simulationConfig.latencyMs, 400));
-    }
-
-    if (forcedSettlement === 'fails' || (forcedSettlement === 'none' && simulationConfig.failureRate > 0 && Math.random() < simulationConfig.failureRate)) {
-      return HttpResponse.json(
-        {
-          code: 'SETTLEMENT_FAILED',
-          message: 'The bank core rail rejected batch settlement for today.',
-        },
-        { status: 500 }
-      );
-    }
-
-    const pendingKobo = currentBalanceState.pendingSettlementKobo;
-    if (pendingKobo <= 0) {
-      return HttpResponse.json({
-        success: true,
-        message: 'No pending settlement balance to credit.',
-        creditedKobo: 0,
-      });
-    }
-
-    // Credit pending settlement to available balance
-    currentBalanceState.availableBalanceKobo += pendingKobo;
-    currentBalanceState.todayInflowKobo += pendingKobo;
-    currentBalanceState.pendingSettlementKobo = 0;
-
-    const txId = `TX-SETTLE-${Date.now().toString().slice(-6)}`;
-    const newTx: Transaction = {
-      id: txId,
-      reference: `FBN-SETTLE-${Date.now().toString().slice(-6)}`,
-      type: 'credit',
-      channel: 'pos_terminal',
-      amountKobo: pendingKobo,
-      feeKobo: 0,
-      status: 'successful',
-      senderName: 'NIBSS Central Clearing Settlement',
-      recipientName: currentBalanceState.merchantName,
-      recipientAccount: currentBalanceState.accountNumber,
-      recipientBankName: 'First Bank of Nigeria',
-      narration: 'POS Terminal Daily Batch Settlement',
-      createdAt: new Date().toISOString(),
-      nibssSessionId: `999011SETTLE${Date.now()}`,
-    };
-
-    seedTransactions.unshift(newTx);
-
-    return HttpResponse.json({
-      success: true,
-      message: 'Settlement completed successfully by bank server.',
-      creditedKobo: pendingKobo,
-      newAvailableBalanceKobo: currentBalanceState.availableBalanceKobo,
-    });
-  }),
 ];
-
