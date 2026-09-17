@@ -6,20 +6,28 @@ import {
   Wifi,
   WifiOff,
   Terminal,
+  SlidersHorizontal,
 } from "lucide-react";
 import { simulationConfig, subscribeSimulationConfig } from "@/mocks/config";
 import { ModeToggle } from "@/components/mode-toggle";
 
 interface HeaderProps {
   onOpenSendMoney: () => void;
+  onOpenMockApi?: () => void;
 }
 
-export function Header({ onOpenSendMoney }: HeaderProps) {
+export function Header({ onOpenSendMoney, onOpenMockApi }: HeaderProps) {
   const [config, setConfig] = React.useState(simulationConfig);
 
   React.useEffect(() => {
     return subscribeSimulationConfig((updated) => setConfig(updated));
   }, []);
+
+  const hasForcedBehavior =
+    config.nextTransferBehavior !== "none" ||
+    config.nextSettlementBehavior !== "none" ||
+    config.offline ||
+    config.failureRate > 0;
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/95 dark:bg-[#060e1f]/95 backdrop-blur-md transition-colors">
@@ -53,7 +61,12 @@ export function Header({ onOpenSendMoney }: HeaderProps) {
         {/* Right Actions */}
         <div className="flex items-center space-x-2 sm:space-x-3">
           {/* Connection / Failure Rate Status Pill */}
-          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+          <button
+            type="button"
+            onClick={onOpenMockApi}
+            className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 cursor-pointer hover:border-amber-400/50 transition-colors"
+            title="Click to open Mock API controls"
+          >
             {config.offline ? (
               <>
                 <WifiOff className="h-3.5 w-3.5 text-red-500" />
@@ -79,7 +92,25 @@ export function Header({ onOpenSendMoney }: HeaderProps) {
                 </span>
               </>
             )}
-          </div>
+          </button>
+
+          {/* Dedicated Mock API Button */}
+          <Button
+            onClick={onOpenMockApi}
+            variant="outline"
+            size="default"
+            id="header-mock-api-btn"
+            className="relative gap-2 border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700/80 font-medium text-xs sm:text-sm text-slate-800 dark:text-slate-100"
+          >
+            <SlidersHorizontal className="h-3.5 w-3.5 text-amber-500" />
+            <span>Mock API</span>
+            {hasForcedBehavior && (
+              <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+              </span>
+            )}
+          </Button>
 
           {/* Theme Mode Toggle */}
           <ModeToggle />
@@ -100,4 +131,5 @@ export function Header({ onOpenSendMoney }: HeaderProps) {
     </header>
   );
 }
+
 
